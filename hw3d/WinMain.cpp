@@ -1,7 +1,11 @@
 #include <Windows.h>
+#include "WindowsMessageMap.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	static WindowsMessageMap mm;
+	OutputDebugString((LPWSTR)mm(msg, lParam, wParam).c_str()); // Had to typecast to the (LPWSTR) type.  NDGuthrie 20230204.  See here: https://learn.microsoft.com/en-us/answers/questions/483237/a-value-of-type-const-char-*-cannot-be-assigned-to
+
 	switch (msg)
 	{
 	case WM_CLOSE:
