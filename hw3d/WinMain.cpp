@@ -4,8 +4,8 @@
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	static WindowsMessageMap mm;
-	OutputDebugString((LPWSTR)mm(msg, lParam, wParam).c_str()); // Had to typecast to the (LPWSTR) type.  NDGuthrie 20230204.  See here: https://learn.microsoft.com/en-us/answers/questions/483237/a-value-of-type-const-char-*-cannot-be-assigned-to
-
+	OutputDebugStringA(mm(msg, lParam, wParam).c_str()); // Had to typecast to the (LPWSTR) type.  NDGuthrie 20230204.  See here: https://learn.microsoft.com/en-us/answers/questions/483237/a-value-of-type-const-char-*-cannot-be-assigned-to
+														 // Edit 2: Had to use OutputDebugStringA(), not OutputDebugString().  Difference being 16 bit vs 8 bit: https://stackoverflow.com/questions/64897414/error-c2664-messageboxw-cannot-convert-argument-2-from-const-char-to-lpcwst
 	switch (msg)
 	{
 	case WM_CLOSE:
