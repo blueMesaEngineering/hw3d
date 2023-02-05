@@ -41,6 +41,34 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 // Window Stuff
 
+Window::Window(int width, int height) noexcept // Added this default title constructor since characters passed to "name" argument parameter in first constructer showed up as pinyin characters in the window
+{
+	// calculate window size based on desired client region size
+	RECT wr;
+	wr.left = 100;
+	wr.right = width + wr.left;
+	wr.top = 100;
+	wr.bottom = height + wr.top;
+	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	// create window and get hWnd
+	hWnd = CreateWindowEx(	// Had to edit to work with CreateWindowEx
+		0
+		, (LPCWSTR)WindowClass::GetName()
+		, L"Default Window Title"
+		, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU
+		, CW_USEDEFAULT
+		, CW_USEDEFAULT
+		, wr.right - wr.left
+		, wr.bottom - wr.top
+		, nullptr
+		, nullptr
+		, WindowClass::GetInstance()
+		, this
+	);
+	// show window
+	ShowWindow(hWnd, SW_SHOWDEFAULT);
+}
+
 Window::Window(int width, int height, const char* name) noexcept
 {
 	// calculate window size based on desired client region size

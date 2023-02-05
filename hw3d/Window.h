@@ -19,6 +19,7 @@ private:
 		HINSTANCE hInst;
 	};
 public:
+	Window(int width, int height) noexcept;
 	Window(int width, int height, const char* name) noexcept;
 	~Window();
 	Window(const Window&) = delete;
