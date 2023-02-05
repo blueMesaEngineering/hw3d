@@ -40,7 +40,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	}
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+	//return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 int CALLBACK WinMain(
@@ -50,33 +50,37 @@ int CALLBACK WinMain(
 	int		  nCmdShow )
 {
 	const auto pClassName = L"hw3dbutts";  // NDGuthrie 20230203 - Had to add the 'L' to the beginning of the string as per the instructions here: https://stackoverflow.com/questions/60044576/e0513-a-value-of-type-const-char-cannot-be-assigned-to-an-entity-of-type-lp
-	// register window class
-	WNDCLASSEX wc = { 0 };
-	wc.cbSize = sizeof(wc);
-	wc.style = CS_OWNDC;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = nullptr;
-	wc.hCursor = nullptr;
-	wc.hbrBackground = nullptr;
-	wc.lpszMenuName = nullptr;
-	wc.lpszClassName = pClassName;
-	wc.hIconSm = nullptr;
-	RegisterClassEx( &wc );
+	//// register window class
+	//WNDCLASSEX wc = { 0 };
+	//wc.cbSize = sizeof(wc);
+	//wc.style = CS_OWNDC;
+	//wc.lpfnWndProc = WndProc;
+	//wc.cbClsExtra = 0;
+	//wc.cbWndExtra = 0;
+	//wc.hInstance = hInstance;
+	//wc.hIcon = nullptr;
+	//wc.hCursor = nullptr;
+	//wc.hbrBackground = nullptr;
+	//wc.lpszMenuName = nullptr;
+	//wc.lpszClassName = pClassName;
+	//wc.hIconSm = nullptr;
+	//RegisterClassEx( &wc );
 	// create window instance
-	HWND hWnd = CreateWindowEx(
-		0, pClassName,
-		L"Happy Hard Window",
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		200, 200, 640, 480,
-		nullptr,
-		nullptr,
-		hInstance,
-		nullptr
-	);
-	ShowWindow(hWnd, SW_SHOW);
+	//HWND hWnd = CreateWindowEx(
+	//	  0
+	//	, pClassName
+	//	, L"Happy Hard Window"
+	//	, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU
+	//	, 200
+	//	, 200
+	//	, 640
+	//	, 480
+	//	, nullptr
+	//	, nullptr
+	//	, hInstance
+	//	, nullptr
+	//);
+	//ShowWindow(hWnd, SW_SHOW);
 
 	// message pump
 	MSG msg;
