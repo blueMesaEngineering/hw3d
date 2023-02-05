@@ -19,7 +19,7 @@ Window::WindowClass::WindowClass() noexcept
 	wc.hCursor = nullptr;
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
-	wc.lpszClassName = (LPCWSTR)GetName(); // Had to typecast as LPCWSTR to make the VS happy...  NDG 202302050154
+	wc.lpszClassName = GetName(); // Had to typecast as LPCWSTR to make the VS happy...  NDG 202302050154
 	wc.hIconSm = nullptr;
 	RegisterClassEx(&wc);
 }
@@ -29,7 +29,7 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass((LPCWSTR)wndClassName, GetInstance());
 }
 
-const char* Window::WindowClass::GetName() noexcept
+const wchar_t* Window::WindowClass::GetName() noexcept
 {
 	return wndClassName;
 }
@@ -69,7 +69,7 @@ Window::Window(int width, int height) noexcept // Added this default title const
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 }
 
-Window::Window(int width, int height, const char* name) noexcept
+Window::Window(int width, int height, const wchar_t* name) noexcept
 {
 	// calculate window size based on desired client region size
 	RECT wr;
@@ -81,8 +81,10 @@ Window::Window(int width, int height, const char* name) noexcept
 	// create window and get hWnd
 	hWnd = CreateWindowEx(	// Had to edit to work with CreateWindowEx
 		0
-		, (LPCWSTR)WindowClass::GetName()
-		, (LPCWSTR)name
+		/*, (LPCWSTR)WindowClass::GetName()
+		, (LPCWSTR)name*/
+		, WindowClass::GetName()
+		, name
 		, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU
 		, CW_USEDEFAULT
 		, CW_USEDEFAULT

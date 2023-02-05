@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliWin.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsMessageMap.h" />
   </ItemGroup>
