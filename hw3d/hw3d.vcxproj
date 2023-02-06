@@ -27,8 +27,16 @@
   <ItemGroup>
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="ChiliException.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsMessageMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="hw3d.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Pictures\blueMesaStudiosIcon.ico" />
+    <Image Include="..\..\..\..\Pictures\blueMesaStudiosIcon.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

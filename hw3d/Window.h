@@ -33,8 +33,8 @@ private:
 		HINSTANCE hInst;
 	};
 public:
-	Window(int width, int height) noexcept;
-	Window(int width, int height, const wchar_t* name) noexcept;
+	Window(int width, int height);
+	Window(int width, int height, const wchar_t* name) ;
 	~Window();
 	Window(const Window&) = delete;
 private:
@@ -49,3 +49,4 @@ private:
 
 // error exception helper macro
 #define CHWND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, hr)
+#define CHWND_LAST_EXCEPT() Window::Exception(__LINE__, __FILE__, GetLastError())
