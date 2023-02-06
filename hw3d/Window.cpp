@@ -51,6 +51,9 @@ Window::Window(int width, int height) noexcept // Added this default title const
 	wr.top = 100;
 	wr.bottom = height + wr.top;
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
+	throw CHWND_EXCEPT(ERROR_ARENA_TRASHED);
+
 	// create window and get hWnd
 	hWnd = CreateWindowEx(	// Had to edit to work with CreateWindowEx
 		0
@@ -79,6 +82,10 @@ Window::Window(int width, int height, const wchar_t* name) noexcept
 	wr.top = 100;
 	wr.bottom = height + wr.top;
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
+	//throw CHWND_EXCEPT(ERROR_ARENA_TRASHED);
+	//throw std::runtime_error("butts butts buuuuuuuuutttttttsssssss");
+
 	// create window and get hWnd
 	hWnd = CreateWindowEx(	// Had to edit to work with CreateWindowEx
 		0

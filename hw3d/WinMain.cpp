@@ -34,7 +34,7 @@ int CALLBACK WinMain(
 	}
 	catch(const ChiliException& e)
 	{
-		MessageBox(nullptr, (LPCWSTR)e.what(), (LPCWSTR)e.GetType(), MB_OK | MB_ICONEXCLAMATION)
+		MessageBox(nullptr, (LPCWSTR)e.what(), (LPCWSTR)e.GetType(), MB_OK | MB_ICONEXCLAMATION);
 	}
 	catch (const std::exception& e)
 	{
