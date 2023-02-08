@@ -21,6 +21,13 @@ int CALLBACK WinMain(
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
+			/******************** KEYBOARD MESSAGE TEST ********************/
+			if (wnd.kbd.KeyIsPressed(VK_SPACE))
+			{
+				MessageBox(nullptr, L"Something Happen!", L"Spacebar Key Was Pressed!", MB_OK | MB_ICONEXCLAMATION);
+			}
+			/******************** END KEYBOARD MESSAGE TEST ********************/
 		}
 
 		if (gResult == -1)

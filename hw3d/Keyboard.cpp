@@ -1,7 +1,12 @@
 #include "Keyboard.h"
+#include <iostream>
+#include "Window.h"
 
 bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept
 {
+	//std::cout << "Now entering Keyboard::KeyIsPressed()" << std::endl;
+	//MessageBox(nullptr, L"Something Happen!", L"Spacebar Key Was Pressed!", MB_OK | MB_ICONEXCLAMATION);
+
 	return keystates[keycode];
 }
 
