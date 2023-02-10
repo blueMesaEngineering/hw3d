@@ -1,13 +1,13 @@
 #include "Keyboard.h"
-#include <iostream>
-#include "Window.h"
+//#include "Window.h"
 
 bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept
 {
-	//std::cout << "Now entering Keyboard::KeyIsPressed()" << std::endl;
 	//MessageBox(nullptr, L"Something Happen!", L"Spacebar Key Was Pressed!", MB_OK | MB_ICONEXCLAMATION);
-
+	
+	//return 1;
 	return keystates[keycode];
+	//return keystates[VK_SPACE];
 }
 
 Keyboard::Event Keyboard::ReadKey() noexcept
@@ -112,28 +112,3 @@ void Keyboard::TrimBuffer(std::queue<T>& buffer) noexcept
 		buffer.pop();
 	}
 }
-
-
-//bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept
-//{
-//	return keystates[keycode];
-//}
-//
-//Keyboard::Event Keyboard::ReadKey() noexcept
-//{
-//	if (keybuffer.size() > 0u)
-//	{
-//		Keyboard::Event e - keybuffer.front();
-//		keybuffer.pop();
-//		return e;
-//	}
-//	else
-//	{
-//		return Keyboard::Event();
-//	}
-//}
-//
-//bool Keyboard::KeyIsEmpty() const noexcept
-//{
-//	return keybuffer.empty();
-//}

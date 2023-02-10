@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include <bitset>
+#include <optional>
 
 class Keyboard
 {
@@ -19,7 +20,7 @@ public:
 		Type type;
 		unsigned char code;
 	public:
-		Event() noexcept
+		Event() 
 			:
 			type(Type::Invalid),
 			code(0u)

@@ -30,14 +30,13 @@ int CALLBACK WinMain(
 			/******************** END KEYBOARD MESSAGE TEST ********************/
 		}
 
+		// check if GetMessage call itself borked
 		if (gResult == -1)
 		{
-			return -1;
+			throw CHWND_LAST_EXCEPT();
 		}
-		else
-		{
-			return msg.wParam;
-		}
+		// wParam here is the value passed to PostQuitMessage
+		return msg.wParam;
 	}
 	catch(const ChiliException& e)
 	{
