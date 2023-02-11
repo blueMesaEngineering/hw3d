@@ -21,7 +21,7 @@ Window::WindowClass::WindowClass() noexcept
 	wc.hCursor = nullptr;
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
-	wc.lpszClassName = GetName(); // Had to typecast as LPCWSTR to make the VS happy...  NDG 202302050154
+	wc.lpszClassName = GetName(); 
 	wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx(&wc);
 }
@@ -123,9 +123,9 @@ Window::~Window()
 	DestroyWindow(hWnd);
 }
 
-LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	// use create parameter passed in from CreateWindowEx() to stor window class pointer
+	// use create parameter passed in from CreateWindowEx() to store window class pointer
 	if (msg == WM_NCCREATE)
 	{
 		// extract ptr to window class from creation data
@@ -142,7 +142,7 @@ LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	// retrieve ptr to window class
 	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
