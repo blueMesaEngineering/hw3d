@@ -124,7 +124,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 	case WM_CLOSE:
 		PostQuitMessage(0);
-		return 0;
+		//return 0;
+		break;
 	// clear keystate when window loses focus to prevent input from getting lost
 	case WM_KILLFOCUS:
 		kbd.ClearState();
