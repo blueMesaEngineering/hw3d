@@ -29,6 +29,7 @@ private:
 		WindowClass() noexcept;
 		~WindowClass();
 		WindowClass(const WindowClass&) = delete;
+		WindowClass& operator=(const WindowClass&) = delete;
 		static constexpr const wchar_t* wndClassName = L"Chili Direct3D Engine Window";
 		static WindowClass wndClass;
 		HINSTANCE hInst;

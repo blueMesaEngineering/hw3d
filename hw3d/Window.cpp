@@ -102,7 +102,7 @@ LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		// set WinAPI-managed user data to store ptr to window class
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		// set message proc to normal (non-setup) handler now that setup is finished
-		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
+		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
 		// forward message to window class handler
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
