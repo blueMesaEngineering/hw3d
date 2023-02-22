@@ -50,7 +50,7 @@ Window::Window(int width, int height, const wchar_t* name)
 	wr.right = width + wr.left;
 	wr.top = 100;
 	wr.bottom = height + wr.top;
-	if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
@@ -89,6 +89,14 @@ Window::Window(int width, int height, const wchar_t* name)
 Window::~Window()
 {
 	DestroyWindow(hWnd);
+}
+
+void Window::SetTitle(const std::string& title)
+{
+	if (SetWindowText(hWnd, (LPCWSTR)title.c_str()) == 0);	// Simple typecast. NDG 202302230014
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
 }
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept

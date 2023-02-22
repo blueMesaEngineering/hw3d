@@ -1,6 +1,6 @@
 //#include <Windows.h>
 //#include "WindowsMessageMap.h"
-//#include <sstream>
+#include <sstream>
 
 #include "Window.h"
 
@@ -22,11 +22,25 @@ int CALLBACK WinMain(
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 
-			/******************** KEYBOARD MESSAGE TEST ********************/
-			if (wnd.kbd.KeyIsPressed(VK_SPACE))
+
+			/******************** MOUSE MESSAGE TEST ********************/
+			while (!wnd.mouse.IsEmpty())
 			{
-				MessageBox(nullptr, L"Something Happen!", L"Spacebar Key Was Pressed!", MB_OK | MB_ICONEXCLAMATION);
+				const auto e = wnd.mouse.Read();
+				if (e.GetType() == Mouse::Event::Type::Move)
+				{
+					std::ostringstream oss;
+					oss << "Mouse Position: (" << e.GetPosX() << "," << e.GetPosY() << ")";
+					wnd.SetTitle(oss.str());
+				}
 			}
+			/******************** END MOUSE MESSAGE TEST ********************/
+
+			/******************** KEYBOARD MESSAGE TEST ********************/
+			//if (wnd.kbd.KeyIsPressed(VK_SPACE))
+			//{
+			//	MessageBox(nullptr, L"Something Happen!", L"Spacebar Key Was Pressed!", MB_OK | MB_ICONEXCLAMATION);
+			//}
 			/******************** END KEYBOARD MESSAGE TEST ********************/
 		}
 
