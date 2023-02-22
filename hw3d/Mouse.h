@@ -94,7 +94,7 @@ private:
 	void OnRightReleased(int x, int y) noexcept;
 	void OnWheelUp(int x, int y) noexcept;
 	void OnWheelDown(int x, int y) noexcept;
-	void TrimBuffer(int x, int y) noexcept;
+	void TrimBuffer() noexcept;
 private:
 	static constexpr unsigned int bufferSize = 16u;
 	int x;
