@@ -91,9 +91,9 @@ Window::~Window()
 	DestroyWindow(hWnd);
 }
 
-void Window::SetTitle(const std::string& title)
+void Window::SetTitle(const std::wstring& title)
 {
-	if (SetWindowText(hWnd, (LPCWSTR)title.c_str()) == 0);	// Simple typecast. NDG 202302230014
+	if (SetWindowText(hWnd, title.c_str()) == 0)	// Simple typecast. NDG 202302230014
 	{
 		throw CHWND_LAST_EXCEPT();
 	}

@@ -30,8 +30,11 @@ int CALLBACK WinMain(
 				if (e.GetType() == Mouse::Event::Type::Move)
 				{
 					std::ostringstream oss;
-					oss << "Mouse Position: (" << e.GetPosX() << "," << e.GetPosY() << ")";
-					wnd.SetTitle(oss.str());
+					//oss << "Mouse Position: (" << e.GetPosX() << "," << e.GetPosY() << ")";
+					std::string msg = "Mouse Position: (" + std::to_string(e.GetPosX()) + "," + std::to_string(e.GetPosY()) + ")";
+					std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+					//const wchar_t* wCStr = wMsg.c_str();
+					wnd.SetTitle(wMsg);
 				}
 			}
 			/******************** END MOUSE MESSAGE TEST ********************/
