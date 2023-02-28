@@ -23,27 +23,46 @@ int CALLBACK WinMain(
 			DispatchMessage(&msg);
 
 			// test code
+			static int i = 0;
 			while (!wnd.mouse.IsEmpty())
 			{
 				const auto e = wnd.mouse.Read();
 				switch (e.GetType())
 				{
-				case Mouse::Event::Type::Leave:
-					wnd.SetTitle(L"GONE!");
-					break;
-
-				case Mouse::Event::Type::Move:
+					/******************** MOUSE WHEEL POSITION TEST ********************/
+				case Mouse::Event::Type::WheelUp:
+					i++;
 					{
-						/*std::ostringstream oss;
-						oss << "Mouse move to (" << e.GetPosX() << "," << e.GetPosY() << ")";
-						wnd.SetTitle(oss.str());*/
-						std::string msg = "Mouse Position: (" + std::to_string(e.GetPosX()) + "," + std::to_string(e.GetPosY()) + ")";
+						std::string msg = "Up: " + std::to_string(i);
 						std::wstring wMsg = std::wstring(msg.begin(), msg.end());
 						wnd.SetTitle(wMsg);
 					}
 					break;
-				}
+				case Mouse::Event::Type::WheelDown:
+					i--;
+					{
+						std::string msg = "Down: " + std::to_string(i);
+						std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+						wnd.SetTitle(wMsg);
+					}
+					break;
 
+				/******************** END MOUSE WHEEL POSITION TEST ********************/
+
+				/******************** MOUSE POSITION TEST ********************/
+				//case Mouse::Event::Type::Leave:
+				//	wnd.SetTitle(L"GONE!");
+				//	break;
+
+				//case Mouse::Event::Type::Move:
+				//	{
+				//		std::string msg = "Mouse Position: (" + std::to_string(e.GetPosX()) + "," + std::to_string(e.GetPosY()) + ")";
+				//		std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+				//		wnd.SetTitle(wMsg);
+				//	}
+				//	break;
+				/******************** END MOUSE POSITION TEST ********************/
+				}
 			}
 
 			/******************** MOUSE MESSAGE TEST ********************/
