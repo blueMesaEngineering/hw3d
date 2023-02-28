@@ -22,21 +22,44 @@ int CALLBACK WinMain(
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 
-
-			/******************** MOUSE MESSAGE TEST ********************/
+			// test code
 			while (!wnd.mouse.IsEmpty())
 			{
 				const auto e = wnd.mouse.Read();
-				if (e.GetType() == Mouse::Event::Type::Move)
+				switch (e.GetType())
 				{
-					std::ostringstream oss;
-					//oss << "Mouse Position: (" << e.GetPosX() << "," << e.GetPosY() << ")";
-					std::string msg = "Mouse Position: (" + std::to_string(e.GetPosX()) + "," + std::to_string(e.GetPosY()) + ")";
-					std::wstring wMsg = std::wstring(msg.begin(), msg.end());
-					//const wchar_t* wCStr = wMsg.c_str();
-					wnd.SetTitle(wMsg);
+				case Mouse::Event::Type::Leave:
+					wnd.SetTitle(L"GONE!");
+					break;
+
+				case Mouse::Event::Type::Move:
+					{
+						/*std::ostringstream oss;
+						oss << "Mouse move to (" << e.GetPosX() << "," << e.GetPosY() << ")";
+						wnd.SetTitle(oss.str());*/
+						std::string msg = "Mouse Position: (" + std::to_string(e.GetPosX()) + "," + std::to_string(e.GetPosY()) + ")";
+						std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+						wnd.SetTitle(wMsg);
+					}
+					break;
 				}
+
 			}
+
+			/******************** MOUSE MESSAGE TEST ********************/
+			//while (!wnd.mouse.IsEmpty())
+			//{
+			//	const auto e = wnd.mouse.Read();
+			//	if (e.GetType() == Mouse::Event::Type::Move)
+			//	{
+			//		std::ostringstream oss;
+			//		//oss << "Mouse Position: (" << e.GetPosX() << "," << e.GetPosY() << ")";
+			//		std::string msg = "Mouse Position: (" + std::to_string(e.GetPosX()) + "," + std::to_string(e.GetPosY()) + ")";
+			//		std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+			//		//const wchar_t* wCStr = wMsg.c_str();
+			//		wnd.SetTitle(wMsg);
+			//	}
+			//}
 			/******************** END MOUSE MESSAGE TEST ********************/
 
 			/******************** KEYBOARD MESSAGE TEST ********************/
