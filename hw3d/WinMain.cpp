@@ -13,8 +13,6 @@ int CALLBACK WinMain(
 	try
 	{
 		return App().DoStuff();
-
-		
 	}
 	catch(const ChiliException& e)
 	{
