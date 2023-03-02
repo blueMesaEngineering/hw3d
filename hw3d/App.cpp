@@ -40,30 +40,35 @@ int App::DoStuff()
 
 void App::DoFrame()
 {
+	const float t = timer.Peek(); // std::setprecision(1) + std::fixed + 
+	std::string msg = "Time elapsed: " + std::to_string((int)t) + "s";
+	std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+	wnd.SetTitle(wMsg);
+
 		// test code
-		static int i = 0;
-		while (!wnd.mouse.IsEmpty())
-		{
-			const auto e = wnd.mouse.Read();
-			switch (e.GetType())
-			{
-				/******************** MOUSE WHEEL POSITION TEST ********************/
-			case Mouse::Event::Type::WheelUp:
-				i++;
-				{
-					std::string msg = "Up: " + std::to_string(i);
-					std::wstring wMsg = std::wstring(msg.begin(), msg.end());
-					wnd.SetTitle(wMsg);
-				}
-				break;
-			case Mouse::Event::Type::WheelDown:
-				i--;
-				{
-					std::string msg = "Down: " + std::to_string(i);
-					std::wstring wMsg = std::wstring(msg.begin(), msg.end());
-					wnd.SetTitle(wMsg);
-				}
-				break;
+		//static int i = 0;
+		//while (!wnd.mouse.IsEmpty())
+		//{
+		//	const auto e = wnd.mouse.Read();
+		//	switch (e.GetType())
+		//	{
+		//		/******************** MOUSE WHEEL POSITION TEST ********************/
+		//	case Mouse::Event::Type::WheelUp:
+		//		i++;
+		//		{
+		//			std::string msg = "Up: " + std::to_string(i);
+		//			std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+		//			wnd.SetTitle(wMsg);
+		//		}
+		//		break;
+		//	case Mouse::Event::Type::WheelDown:
+		//		i--;
+		//		{
+		//			std::string msg = "Down: " + std::to_string(i);
+		//			std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+		//			wnd.SetTitle(wMsg);
+		//		}
+		//		break;
 
 				/******************** END MOUSE WHEEL POSITION TEST ********************/
 
@@ -80,8 +85,8 @@ void App::DoFrame()
 				//	}
 				//	break;
 				/******************** END MOUSE POSITION TEST ********************/
-			}
-		}
+		//	}
+		//}
 
 		/******************** MOUSE MESSAGE TEST ********************/
 		//while (!wnd.mouse.IsEmpty())

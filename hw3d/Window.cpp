@@ -102,7 +102,7 @@ void Window::SetTitle(const std::wstring& title)
 	}
 }
 
-static std::optional<int> ProcessMessages()
+std::optional<int> Window::ProcessMessages()
 {
 	MSG msg;
 	// while queue has messages, remove and dispatch them (but do not block
@@ -119,6 +119,9 @@ static std::optional<int> ProcessMessages()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+	// return empty optional when not quitting app
+	return {};
 }
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
