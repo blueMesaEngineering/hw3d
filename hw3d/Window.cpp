@@ -102,6 +102,25 @@ void Window::SetTitle(const std::wstring& title)
 	}
 }
 
+static std::optional<int> ProcessMessages()
+{
+	MSG msg;
+	// while queue has messages, remove and dispatch them (but do not block
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		// check for quit because peekmessage does not signal this via return
+		if (msg.message == WM_QUIT)
+		{
+			// return optional wrapping int (arg to PostQuitMessage is in wParam
+			return msg.wParam;
+		}
+
+		// TranslateMessage will post auxiliary WM_CHAR message from key msg
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	// use create parameter passed in from CreateWindowEx() to store window class pointer
@@ -217,17 +236,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		const POINTS pt = MAKEPOINTS(lParam);
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
-		/*if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-		{
-			mouse.OnWheelUp(pt.x, pt.y);
-		}
-		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
-		{
-			mouse.OnWheelDown(pt.x, pt.y);
-		}
-		break;*/
+
 	}
-	/******************** END MOUSE MESSAGES ********************/
 
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
