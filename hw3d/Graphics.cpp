@@ -1,5 +1,7 @@
 #include "Graphics.h"
 
+#pragma comment(lib, "d3d11.lib")
+
 Graphics::Graphics(HWND hWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
@@ -50,4 +52,9 @@ Graphics::~Graphics()
 	{
 		pDevice->Release();
 	}
+}
+
+void Graphics::EndFrame()
+{
+	pSwap->Present(1u, 0u);
 }

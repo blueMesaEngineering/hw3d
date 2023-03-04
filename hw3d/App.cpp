@@ -40,10 +40,12 @@ int App::DoStuff()
 
 void App::DoFrame()
 {
-	const float t = timer.Peek(); // std::setprecision(1) + std::fixed + 
-	std::string msg = "Time elapsed: " + std::to_string((int)t) + "s";
-	std::wstring wMsg = std::wstring(msg.begin(), msg.end());
-	wnd.SetTitle(wMsg);
+	wnd.Gfx().EndFrame();
+
+	//const float t = timer.Peek(); // std::setprecision(1) + std::fixed + 
+	//std::string msg = "Time elapsed: " + std::to_string((int)t) + "s";
+	//std::wstring wMsg = std::wstring(msg.begin(), msg.end());
+	//wnd.SetTitle(wMsg);
 
 		// test code
 		//static int i = 0;
