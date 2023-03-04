@@ -48,6 +48,9 @@
     <Image Include="..\..\..\..\Pictures\blueMesaStudiosIcon.ico" />
     <Image Include="..\..\..\..\Pictures\blueMesaStudiosIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="tests.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
