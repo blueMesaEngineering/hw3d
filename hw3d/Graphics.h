@@ -22,6 +22,12 @@ public:
 	private:
 		HRESULT hr;
 	};
+	class DeviceRemovedException : public HrException
+	{
+		using HrException::HrException;
+	public:
+		const char* GetType() const noexcept override;
+	};
 
 public:
 	Graphics(HWND hWnd);
