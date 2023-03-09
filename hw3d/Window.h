@@ -13,6 +13,7 @@ class Window
 public:
 	class Exception : public ChiliException
 	{
+		using ChiliException::ChiliException;
 	public:
 		static std::string TranslateErrorCode(HRESULT hr) noexcept;  // Very helpful NDG 202302060131
 	};

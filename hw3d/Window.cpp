@@ -269,6 +269,7 @@ const char* Window::HrException::what() const noexcept
 	std::ostringstream oss;
 	oss << GetType() << std::endl
 		<< "[Error Code] " << GetErrorCode() << std::endl
+		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
 		<< "[Description] " << GetErrorDescription() << std::endl
 		<< GetOriginString();
 	whatBuffer = oss.str();
