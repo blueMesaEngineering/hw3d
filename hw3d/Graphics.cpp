@@ -1,10 +1,14 @@
 #include "Graphics.h"
 #include "dxerr.h"
 #include <sstream>
+#include <d3dcompiler.h>
+#include <iostream>
+#include <fstream>
 
 namespace wrl = Microsoft::WRL;
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 
 // Graphics exception checking/throwing macros (some with dxgi infos)
 #define GFX_EXCEPT_NOINFO(hr) Graphics::HrException(__LINE__, __FILE__, (hr))
@@ -133,8 +137,32 @@ void Graphics::DrawTestTriangle()
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0u;
 	pContext->IASetVertexBuffers(0u ,1u, &pVertexBuffer, &stride, &offset);
+
+	// Create vertex shader
+	wrl::ComPtr<ID3D11VertexShader> pVertexShader;
+	wrl::ComPtr<ID3DBlob> pBlob;
+	GFX_THROW_INFO(D3DReadFileToBlob(L"VertexShader.cso", &pBlob));
+
+	// pBlobOutput filestream for debugging.
+	std::ofstream pBlobOutput("pBlobOutput.txt");
+	pBlobOutput << "[pBlob->GetBufferPointer] " << pBlob->GetBufferPointer() << std::endl
+		<< "[pBlob->GetBufferSize] " << pBlob->GetBufferSize() << std::endl
+		<< "[File] " << __FILE__ << std::endl
+		<< "[Line] " << __LINE__ << std::endl;
+	pBlobOutput.close();
+
+	GFX_THROW_INFO(
+		pDevice->CreateVertexShader(
+			  pBlob->GetBufferPointer()
+			, pBlob->GetBufferSize()
+			, nullptr
+			, &pVertexShader
+		)
+	);
 	
-	GFX_THROW_INFO_ONLY(pContext->Draw(3u, 0u));
+	pContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+
+	GFX_THROW_INFO_ONLY(pContext->Draw((UINT)std::size(vertices), 0u));
 }
 
 // Graphics Exception Stuff
@@ -158,8 +186,14 @@ Graphics::HrException::HrException(int line, const char * file, HRESULT hr, std:
 
 const char* Graphics::HrException::what() const noexcept
 {
+	std::ofstream outputFileStream("HrException-what.txt");
 	std::ostringstream oss;
 	oss << GetType() << std::endl
+		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
+		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
+		<< "[Error String] " << GetErrorString() << std::endl
+		<< "[Description] " << GetErrorDescription() << std::endl;
+	outputFileStream << GetType() << std::endl
 		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
 		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
 		<< "[Error String] " << GetErrorString() << std::endl
@@ -167,8 +201,11 @@ const char* Graphics::HrException::what() const noexcept
 	if (!info.empty())
 	{
 		oss << "\n[Error info]\n" << GetErrorInfo() << std::endl << std::endl;
+		outputFileStream << "\n[Error info]\n" << GetErrorInfo() << std::endl << std::endl;;
 	}
 	oss	<< GetOriginString();
+	outputFileStream << GetOriginString();
+	outputFileStream.close();
 	whatBuffer = oss.str();
 	return whatBuffer.c_str();
 }
@@ -190,7 +227,7 @@ std::string Graphics::HrException::GetErrorString() const noexcept
 
 std::string Graphics::HrException::GetErrorDescription() const noexcept
 {
-	wchar_t buf[512];
+	wchar_t buf[1024];
 	DXGetErrorDescription(hr, buf, sizeof(buf));
 	std::wstring wbuf(buf);
 	std::string msg(wbuf.begin(), wbuf.end());

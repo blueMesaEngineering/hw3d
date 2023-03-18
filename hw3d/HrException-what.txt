@@ -1,0 +1,7 @@
+Chili Graphics Exception
+[Error Code] 0x80070057 (2147942487)
+[Error String] E_INVALIDARG
+[Description] The parameter is incorrect.
+
+[File]C:\Users\ukrgr\source\repos\hw3d\hw3d\Graphics.cpp
+[Line]161
