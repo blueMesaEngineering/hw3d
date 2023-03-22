@@ -111,18 +111,25 @@ void Graphics::DrawTestTriangle()
 	{
 		float x;
 		float y;
+		float r;
+		float g;
+		float b;
 	};
 
 	// Create vertex buffer (1 2d triangle at center of screen)
 	const Vertex vertices[]
 	{
-		{ 0.0f, 0.5f },
-		{ 0.5f, -0.5f },
-		{ -0.5f, -0.5f },
+		{ 0.0f, 0.5f, 1.0f, 0.0f, 0.0f },
+		{ 0.5f, -0.5f, 0.0f, 1.0f, 0.0f },
+		{ -0.5f, -0.5f, 0.0f, 0.0f, 1.0f },
 
-		{ 0.5f, 1.0f },
-		{ 1.0f, 0.5f },
-		{ 0.5f, 0.5f },
+		//{ 0.0f, 0.5f },
+		//{ 0.5f, -0.5f },
+		//{ -0.5f, -0.5f },
+
+		//{ 0.5f, 1.0f },
+		//{ 1.0f, 0.5f },
+		//{ 0.5f, 0.5f },
 	};
 
 	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
@@ -195,6 +202,15 @@ void Graphics::DrawTestTriangle()
 			, DXGI_FORMAT_R32G32_FLOAT
 			, 0
 			, 0
+			, D3D11_INPUT_PER_VERTEX_DATA
+			, 0
+		},
+		{
+			  "Color"
+			, 0
+			, DXGI_FORMAT_R32G32B32_FLOAT
+			, 0
+			, 8u
 			, D3D11_INPUT_PER_VERTEX_DATA
 			, 0
 		},
