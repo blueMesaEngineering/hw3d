@@ -4,4 +4,4 @@ Chili Graphics Exception
 [Description] The parameter is incorrect.
 
 [File]C:\Users\ukrgr\source\repos\hw3d\hw3d\Graphics.cpp
-[Line]161
+[Line]185
