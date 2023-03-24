@@ -102,7 +102,7 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
 }
 
-void Graphics::DrawTestTriangle()
+void Graphics::DrawTestTriangle(float angle)
 {
 	namespace wrl = Microsoft::WRL;
 	HRESULT hr;
@@ -138,7 +138,7 @@ void Graphics::DrawTestTriangle()
 		{ 0.3f, 0.3f, 0, 0, 255, 0 },
 		//{ 0.5f, -0.5f, 0, 255, 0, 0 },
 
-		{ 0.0f, -1.8f, 255, 0, 0, 0 },
+		{ 0.0f, -0.8f, 255, 0, 0, 0 },
 		//{ -0.5f, -0.5f, 0, 0, 255, 0 },
 		//{ 0.5f, -0.5f, 0, 255, 0, 0 },
 
@@ -161,7 +161,7 @@ void Graphics::DrawTestTriangle()
 	// Bind vertex buffer to pipeline
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0u;
-	pContext->IASetVertexBuffers(0u ,1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+	pContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 
 
 	// Create index buffer
@@ -186,6 +186,39 @@ void Graphics::DrawTestTriangle()
 
 	// Bind index buffer
 	pContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+
+	// Create constant buffer for transformation matrix
+	struct ConstantBuffer
+	{
+		struct
+		{
+			float element[4][4];
+		} transformation;
+	};
+
+	const ConstantBuffer cb =
+	{
+		{
+			std::cos(angle),	std::sin(angle),	0.0f,	0.0f,
+			-std::sin(angle),	std::cos(angle),	0.0f,	0.0f,
+			0.0f,				0.0f,				1.0f,	0.0f,
+			0.0f,				0.0f,				0.0f,	1.0f,
+		}
+	};
+	wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
+	D3D11_BUFFER_DESC cbd = { };
+	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd.Usage = D3D11_USAGE_DYNAMIC;
+	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbd.MiscFlags = 0u;
+	cbd.ByteWidth = sizeof(cb);
+	cbd.StructureByteStride = 0u;
+	D3D11_SUBRESOURCE_DATA csd = {};
+	csd.pSysMem = &cb;
+	GFX_THROW_INFO(pDevice->CreateBuffer(&cbd, &csd, &pConstantBuffer));
+
+	// Bind constant buffer to vertex shader
+	pContext->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 
 	// Create pixel shader
 	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
@@ -270,12 +303,12 @@ void Graphics::DrawTestTriangle()
 
 	// Configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 400;
-	vp.Height = 300;
+	vp.Width = 800;
+	vp.Height = 600;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
-	vp.TopLeftX = 100;
-	vp.TopLeftY = 100;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
 	pContext->RSSetViewports(1u, &vp);
 
 	GFX_THROW_INFO_ONLY(pContext->DrawIndexed((UINT)std::size(indices), 0u, 0u));
