@@ -4,8 +4,10 @@
 #include <d3dcompiler.h>
 #include <iostream>
 #include <fstream>
+#include <DirectXMath.h>
 
 namespace wrl = Microsoft::WRL;
+namespace dx = DirectX;
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -102,9 +104,12 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
 }
 
-void Graphics::DrawTestTriangle(float angle)
+void Graphics::DrawTestTriangle(float angle, float x, float y)
 {
-	namespace wrl = Microsoft::WRL;
+	dx::XMVECTOR v = dx::XMVectorSet(3.0f, 3.0f, 0.0f, 0.0f);
+	auto result = dx::XMVector3Transform(v, dx::XMMatrixScaling(1.5f, 0.0f, 0.0f));
+	auto xx = dx::XMVectorGetX(result);
+
 	HRESULT hr;
 
 	struct Vertex
@@ -190,19 +195,18 @@ void Graphics::DrawTestTriangle(float angle)
 	// Create constant buffer for transformation matrix
 	struct ConstantBuffer
 	{
-		struct
-		{
-			float element[4][4];
-		} transformation;
+		dx::XMMATRIX transform;
 	};
 
 	const ConstantBuffer cb =
 	{
 		{
-			(3.0f / 4.0f) * std::cos(angle),	std::sin(angle),	0.0f,	0.0f,
-			(3.0f / 4.0f) * -std::sin(angle),	std::cos(angle),	0.0f,	0.0f,
-			0.0f,								0.0f,				1.0f,	0.0f,
-			0.0f,								0.0f,				0.0f,	1.0f,
+			dx::XMMatrixTranspose(
+				dx::XMMatrixRotationZ(angle) *
+				dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
+				dx::XMMatrixTranslation(3.0f / 4.0f * x, 1.0f * y, 0.0f)
+
+			)
 		}
 	};
 	wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
