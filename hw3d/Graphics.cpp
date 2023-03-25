@@ -2,6 +2,7 @@
 #include "dxerr.h"
 #include <sstream>
 #include <d3dcompiler.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <DirectXMath.h>
@@ -118,6 +119,7 @@ void Graphics::DrawTestTriangle(float angle, float x, float y)
 		{
 			float x;
 			float y;
+			float z;
 		} pos;
 		struct
 		{
@@ -131,23 +133,15 @@ void Graphics::DrawTestTriangle(float angle, float x, float y)
 	// Create vertex buffer (1 2d triangle at center of screen)
 	Vertex vertices[]
 	{
-		{ 0.0f, 0.5f, 255, 0, 0, 0 },
-		{ 0.5f, -0.5f, 0, 255, 0, 0 },
-		{ -0.5f, -0.5f, 0, 0, 255, 0 },
-
-		//{ 0.0f, 0.5f, 255, 0, 0, 0 },
-		//{ -0.5f, -0.5f, 0, 0, 255, 0 },
-		{ -0.3f, 0.3f, 0, 255, 0, 0 },
-
-		//{ 0.0f, 0.5f, 255, 0, 0, 0 },
-		{ 0.3f, 0.3f, 0, 0, 255, 0 },
-		//{ 0.5f, -0.5f, 0, 255, 0, 0 },
-
-		{ 0.0f, -1.0f, 255, 0, 0, 0 },
-		//{ -0.5f, -0.5f, 0, 0, 255, 0 },
-		//{ 0.5f, -0.5f, 0, 255, 0, 0 },
-
-
+			{ -1.0f, -1.0f, -1.0f,  255,   0, 0  }
+		,	{  1.0f, -1.0f, -1.0f,    0, 255, 0  }
+		,	{ -1.0f,  1.0f, -1.0f,    0,   0, 255}
+		,	{  1.0f,  1.0f, -1.0f,  255, 255, 0  }
+		
+		,	{ -1.0f, -1.0f,  1.0f,  255,   0, 255}
+		,	{  1.0f, -1.0f,  1.0f,  255, 255,   0}
+		,	{ -1.0f,  1.0f,  1.0f,    0,   0,   0}
+		,	{  1.0f,  1.0f,  1.0f,  255, 255, 255}
 	};
 	vertices[0].color.g = 255;
 
@@ -172,10 +166,12 @@ void Graphics::DrawTestTriangle(float angle, float x, float y)
 	// Create index buffer
 	const unsigned short indices[] =
 	{
-		0,1,2,
-		0,2,3,
-		0,4,1,
-		2,1,5,
+		0,2,1, 2,3,1,
+		1,3,5, 3,7,5,
+		2,6,3, 3,6,7,
+		4,5,7, 4,7,6,
+		0,4,2, 2,4,6,
+		0,1,4, 1,5,4,
 	};
 	wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
 	D3D11_BUFFER_DESC ibd = { };
@@ -203,9 +199,10 @@ void Graphics::DrawTestTriangle(float angle, float x, float y)
 		{
 			dx::XMMatrixTranspose(
 				dx::XMMatrixRotationZ(angle) *
-				dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
-				dx::XMMatrixTranslation(3.0f / 4.0f * x, 1.0f * y, 0.0f)
-
+				dx::XMMatrixRotationX(angle) *
+				//dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
+				dx::XMMatrixTranslation( x,  y, 4.0f) *
+				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
 			)
 		}
 	};
@@ -273,7 +270,7 @@ void Graphics::DrawTestTriangle(float angle, float x, float y)
 		{
 			  "Position"
 			, 0
-			, DXGI_FORMAT_R32G32_FLOAT
+			, DXGI_FORMAT_R32G32B32_FLOAT
 			, 0
 			, 0
 			, D3D11_INPUT_PER_VERTEX_DATA
@@ -284,7 +281,7 @@ void Graphics::DrawTestTriangle(float angle, float x, float y)
 			, 0
 			, DXGI_FORMAT_R8G8B8A8_UNORM
 			, 0
-			, 8u
+			, 12u
 			, D3D11_INPUT_PER_VERTEX_DATA
 			, 0
 		},
