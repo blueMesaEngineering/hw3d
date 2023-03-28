@@ -1,6 +1,7 @@
 #include "Window.h"
 #include <sstream>
 #include "resource.h"
+#include "WindowsThrowMacros.h"
 
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
@@ -225,6 +226,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftPressed(pt.x, pt.y);
+		SetForegroundWindow(hWnd);
 		break;
 	}
 	case WM_RBUTTONDOWN:
@@ -237,12 +239,23 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftReleased(pt.x, pt.y);
+		// Release mouse if outside window
+		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y > height)
+		{
+			ReleaseCapture();
+			mouse.OnMouseLeave();
+		}
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnRightReleased(pt.x, pt.y);
+		// Release mouse if outside window
+		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y > height)
+		{
+			ReleaseCapture();
+			mouse.OnMouseLeave();
 		break;
 	}
 	case WM_MOUSEWHEEL:
