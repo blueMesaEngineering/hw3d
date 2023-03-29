@@ -12,7 +12,7 @@ public:
 
 		D3D11_MAPPED_SUBRESOURCE msr;
 		GFX_THROW_INFO(GetContext(gfx)->Map(
-			pConstantBuffer.Get()
+			  pConstantBuffer.Get()
 			, 0u
 			, D3D11_MAP_WRITE_DISCARD
 			, 0u
