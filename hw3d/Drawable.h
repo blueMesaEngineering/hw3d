@@ -4,7 +4,7 @@
 
 class Bindable;
 
-class Drawable;
+class Drawable
 {
 public:
 	Drawable() = default;
@@ -18,4 +18,4 @@ public:
 private:
 	const IndexBuffer* pIndexBuffer = nullptr;
 	std::vector<std::unique_ptr<Bindable>> binds;
-}
+};
