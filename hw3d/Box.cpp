@@ -41,7 +41,7 @@ Box::Box(Graphics& gfx
 	AddBind(std::make_unique<VertexBuffer>(gfx, vertices));
 
 	auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
-	audo pvsbc = pvs->GetBytecode();
+	auto pvsbc = pvs->GetBytecode();
 	AddBind(std::move(pvs));
 
 	AddBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
@@ -110,10 +110,10 @@ void Box::Update(float dt) noexcept
 	chi += dchi * dt;
 }
 
-DirectX::XMMatrix Box::GetTransformXM() const noexcept
+DirectX::XMMATRIX Box::GetTransformXM() const noexcept
 {
 	return DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-		DirextX::XMMatrixTransformation(r, 0.0f, 0.0f) *
+		DirextX::XMMatrixTranslation(r, 0.0f, 0.0f) *
 		DirectX::XMMatrixTransformation(theta, phi, chi) *
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
 }

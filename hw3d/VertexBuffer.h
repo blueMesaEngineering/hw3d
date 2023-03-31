@@ -24,7 +24,10 @@ public:
 		bd.StructureByteStride = sizeof(V);
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = vertices.data();
-		GFX_THROW_INFO(pDevice->CreateBuffer(&bd, &sd, &pVertexBuffer));
-
+		GFX_THROW_INFO(GetDevice(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer));
 	}
+	void Bind(Graphics& gfx) noexcept override;
+protected:
+	UINT stride;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
 };
