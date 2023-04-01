@@ -18,7 +18,7 @@ public:
 			, 0u
 			, &msr
 		));
-		memcpy(msr.pData, &consts, sizeOf(consts));
+		memcpy(msr.pData, &consts, sizeof(consts));
 		GetContext(gfx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
 	ConstantBuffer(Graphics& gfx, const C& consts)

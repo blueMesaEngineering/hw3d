@@ -22,9 +22,12 @@ Box::Box(Graphics& gfx
 {
 	struct Vertex
 	{
-		float x;
-		float y;
-		float z;
+		struct
+		{
+			float x;
+			float y;
+			float z;
+		} pos;
 	};
 	const std::vector<Vertex> vertices =
 	{
@@ -80,7 +83,7 @@ Box::Box(Graphics& gfx
 	};
 	AddBind(std::make_unique<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
 
-	const D3D11_INPUT_ELEMENT_DESC ied =
+	const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 	{
 		{
 			  "Position"
@@ -114,6 +117,6 @@ DirectX::XMMATRIX Box::GetTransformXM() const noexcept
 {
 	return DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
 		DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
-		DirectX::XMMatrixTransformation(theta, phi, chi) *
+		DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
 }

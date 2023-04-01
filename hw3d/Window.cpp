@@ -170,14 +170,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
-	// clear keystate when window loses focus to prevent input from getting lost
+		// clear keystate when window loses focus to prevent input from getting lost
 	case WM_KILLFOCUS:
 		kbd.ClearState();
 		break;
 
-	/******************** KEYBOARD MESSAGES ********************/
+		/******************** KEYBOARD MESSAGES ********************/
 	case WM_KEYDOWN:
-	// syskey commands need to be handled to track ALT key (VK_MENU)
+		// syskey commands need to be handled to track ALT key (VK_MENU)
 	case WM_SYSKEYDOWN:
 		if (!(lParam & 0x40000000 || kbd.AutorepeatIsEnabled()))  // Filter autorepeat
 		{
@@ -191,14 +191,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CHAR:
 		kbd.OnChar(static_cast<unsigned char>(wParam));
 		break;
-	/******************** END KEYBOARD MESSAGES ********************/
+		/******************** END KEYBOARD MESSAGES ********************/
 
-	/******************** MOUSE MESSAGES ********************/
+		/******************** MOUSE MESSAGES ********************/
 	case WM_MOUSEMOVE:
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		// In client region -> log move, and log enter + capture mouse (if not previously in window)
-		if(pt.x >= 0 && pt.x < width && pt.y >=0 && pt.y < height)
+		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
 			mouse.OnMouseMove(pt.x, pt.y);
 			if (!mouse.IsInWindow())
@@ -256,7 +256,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		{
 			ReleaseCapture();
 			mouse.OnMouseLeave();
-		break;
+			break;
+		}
 	}
 	case WM_MOUSEWHEEL:
 	{
@@ -269,7 +270,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-
 // Window Exception Stuff
 Window::HrException::HrException(int line, const char* file, HRESULT hr) noexcept
 	:
