@@ -14,6 +14,22 @@ namespace dx = DirectX;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
+//// Graphics exception checking/throwing macros (some with dxgi infos)
+//#define GFX_EXCEPT_NOINFO(hr) Graphics::HrException(__LINE__, __FILE__, (hr))
+//#define GFX_THROW_NOINFO(hrcall) if(FAILED(hr = (hrcall))) throw Graphics::HrException(__LINE__, __FILE__, hr)
+//
+//#ifndef NDEBUG
+//#define GFX_EXCEPT(hr) Graphics::HrException(__LINE__, __FILE__, (hr), infoManager.GetMessages())
+//#define GFX_THROW_INFO(hrcall) infoManager.Set(); if(FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr)
+//#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException(__LINE__, __FILE__, (hr), infoManager.GetMessages())
+//#define GFX_THROW_INFO_ONLY(call) infoManager.Set(); (call); {auto v = infoManager.GetMessages(); if(!v.empty()) {throw Graphics::InfoException(__LINE__, __FILE__, v);}}
+//#else
+//#define GFX_EXCEPT(hr) Graphics::HrException(__LINE__, __FILE__, (hr))
+//#define GFX_THROW_INFO(hrcall) GFX_THROW_NOINFO(hrcall)
+//#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException(__LINE__, __FILE__, (hr))
+//#define GFX_THROW_INFO_ONLY(call) (call)
+//#endif // !1
+
 Graphics::Graphics(HWND hWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
@@ -110,9 +126,6 @@ Graphics::Graphics(HWND hWnd)
 void Graphics::EndFrame()
 {
 	HRESULT hr;
-#ifndef NDEBUG
-	infoManager.Set();
-#endif
 	if (FAILED(hr = pSwap->Present(1u, 0u)))
 	{
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
@@ -135,9 +148,9 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 
 void Graphics::DrawTestTriangle(float angle, float x, float z)
 {
-	//dx::XMVECTOR v = dx::XMVectorSet(3.0f, 3.0f, 0.0f, 0.0f);
-	//auto result = dx::XMVector3Transform(v, dx::XMMatrixScaling(1.5f, 0.0f, 0.0f));
-	//auto xx = dx::XMVectorGetX(result);
+	dx::XMVECTOR v = dx::XMVectorSet(3.0f, 3.0f, 0.0f, 0.0f);
+	auto result = dx::XMVector3Transform(v, dx::XMMatrixScaling(1.5f, 0.0f, 0.0f));
+	auto xx = dx::XMVectorGetX(result);
 
 	HRESULT hr;
 
@@ -158,7 +171,7 @@ void Graphics::DrawTestTriangle(float angle, float x, float z)
 		,	{  1.0f, -1.0f, -1.0f}
 		,	{ -1.0f,  1.0f, -1.0f}
 		,	{  1.0f,  1.0f, -1.0f}
-		
+
 		,	{ -1.0f, -1.0f,  1.0f}
 		,	{  1.0f, -1.0f,  1.0f}
 		,	{ -1.0f,  1.0f,  1.0f}
@@ -220,13 +233,13 @@ void Graphics::DrawTestTriangle(float angle, float x, float z)
 			dx::XMMatrixTranspose(
 				dx::XMMatrixRotationZ(angle) *
 				dx::XMMatrixRotationX(angle) *
-				dx::XMMatrixTranslation( x, 0.0f, z + 4.0f) *
+				dx::XMMatrixTranslation(x, 0.0f, z + 4.0f) *
 				dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
 			)
 		}
 	};
 	wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
-	D3D11_BUFFER_DESC cbd;
+	D3D11_BUFFER_DESC cbd = { };
 	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbd.Usage = D3D11_USAGE_DYNAMIC;
 	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -306,13 +319,13 @@ void Graphics::DrawTestTriangle(float angle, float x, float z)
 
 	GFX_THROW_INFO(
 		pDevice->CreateVertexShader(
-			  pBlob->GetBufferPointer()
+			pBlob->GetBufferPointer()
 			, pBlob->GetBufferSize()
 			, nullptr
 			, &pVertexShader
 		)
 	);
-	
+
 	// Bind vertex shader
 	pContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 
@@ -354,11 +367,11 @@ void Graphics::DrawTestTriangle(float angle, float x, float z)
 	vp.TopLeftY = 0;
 	pContext->RSSetViewports(1u, &vp);
 
-	//GFX_THROW_INFO_ONLY(pContext->DrawIndexed((UINT)std::size(indices), 0u, 0u));
+	GFX_THROW_INFO_ONLY(pContext->DrawIndexed((UINT)std::size(indices), 0u, 0u));
 }
 
 // Graphics Exception Stuff
-Graphics::HrException::HrException(int line, const char * file, HRESULT hr, std::vector<std::string> infoMsgs) noexcept
+Graphics::HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> infoMsgs) noexcept
 	:
 	Exception(line, file),
 	hr(hr)
@@ -395,7 +408,7 @@ const char* Graphics::HrException::what() const noexcept
 		oss << "\n[Error info]\n" << GetErrorInfo() << std::endl << std::endl;
 		outputFileStream << "\n[Error info]\n" << GetErrorInfo() << std::endl << std::endl;;
 	}
-	oss	<< GetOriginString();
+	oss << GetOriginString();
 	outputFileStream << GetOriginString();
 	outputFileStream.close();
 	whatBuffer = oss.str();
