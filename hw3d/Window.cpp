@@ -1,6 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #include "Window.h"
 #include <sstream>
 #include "resource.h"
+#include "WindowsThrowMacros.h"
+
 
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
@@ -21,7 +42,7 @@ Window::WindowClass::WindowClass() noexcept
 	wc.hCursor = nullptr;
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
-	wc.lpszClassName = GetName(); 
+	wc.lpszClassName = GetName();
 	wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx(&wc);
 }
@@ -113,7 +134,7 @@ std::optional<int> Window::ProcessMessages() noexcept
 		// check for quit because peekmessage does not signal this via return
 		if (msg.message == WM_QUIT)
 		{
-			// return optional wrapping int (arg to PostQuitMessage is in wParam
+			// return optional wrapping int (arg to PostQuitMessage is in wParam) signals quit
 			return msg.wParam;
 		}
 
@@ -166,17 +187,19 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 {
 	switch (msg)
 	{
+		// We don't want the DefProc to handle this message because 
+		// we want our destructor to destroy the window, so return 0 instead of break
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
-	// clear keystate when window loses focus to prevent input from getting lost
+		// clear keystate when window loses focus to prevent input from getting lost
 	case WM_KILLFOCUS:
 		kbd.ClearState();
 		break;
 
-	/******************** KEYBOARD MESSAGES ********************/
+		/******************** KEYBOARD MESSAGES ********************/
 	case WM_KEYDOWN:
-	// syskey commands need to be handled to track ALT key (VK_MENU)
+		// syskey commands need to be handled to track ALT key (VK_MENU)
 	case WM_SYSKEYDOWN:
 		if (!(lParam & 0x40000000 || kbd.AutorepeatIsEnabled()))  // Filter autorepeat
 		{
@@ -190,14 +213,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_CHAR:
 		kbd.OnChar(static_cast<unsigned char>(wParam));
 		break;
-	/******************** END KEYBOARD MESSAGES ********************/
+		/******************** END KEYBOARD MESSAGES ********************/
 
-	/******************** MOUSE MESSAGES ********************/
+		/******************** MOUSE MESSAGES ********************/
 	case WM_MOUSEMOVE:
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		// In client region -> log move, and log enter + capture mouse (if not previously in window)
-		if(pt.x >= 0 && pt.x < width && pt.y >=0 && pt.y < height)
+		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
 			mouse.OnMouseMove(pt.x, pt.y);
 			if (!mouse.IsInWindow())
@@ -225,6 +248,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftPressed(pt.x, pt.y);
+		SetForegroundWindow(hWnd);
 		break;
 	}
 	case WM_RBUTTONDOWN:
@@ -237,12 +261,24 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftReleased(pt.x, pt.y);
+		// Release mouse if outside of window
+		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+		{
+			ReleaseCapture();
+			mouse.OnMouseLeave();
+		}
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnRightReleased(pt.x, pt.y);
+		// Release mouse if outside of window
+		if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+		{
+			ReleaseCapture();
+			mouse.OnMouseLeave();
+		}
 		break;
 	}
 	case WM_MOUSEWHEEL:
@@ -250,10 +286,11 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		const POINTS pt = MAKEPOINTS(lParam);
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
-
+		break;
+	}
+	/*************** END MOUSE MESSAGES ***************/
 	}
 
-	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
@@ -284,6 +321,7 @@ const char* Window::HrException::GetType() const noexcept
 std::string Window::Exception::TranslateErrorCode(HRESULT hr) noexcept
 {
 	char* pMsgBuf = nullptr;
+	// Windows will allocate memory for err string and make our pointer point to it
 	DWORD nMsgLen = FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
