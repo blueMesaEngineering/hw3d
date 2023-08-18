@@ -20,7 +20,7 @@
 // Macro for importing infoManager into local scope
 // this.GetInfoManager must exist
 #ifdef NDEBUG
-#define INFOMAN() HRESULT hr
+#define INFOMAN(gfx) HRESULT hr
 #else
-#define INFOMAN() HRESULT hr; DxgiInfoManager = GetInfoManager()
+#define INFOMAN(gfx) HRESULT hr; DxgiInfoManager& infoManager = GetInfoManager(gfx) // Bindable/Drawable system update requires gfx argument to GetInfoManager function. 202308120416 NDG
 #endif
