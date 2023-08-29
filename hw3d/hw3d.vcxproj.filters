@@ -60,9 +60,6 @@
     <ClCompile Include="ChiliTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsOld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dxerr.cpp">
       <Filter>Dxerr</Filter>
     </ClCompile>
@@ -190,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawableBase.h">
+      <Filter>Source Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
