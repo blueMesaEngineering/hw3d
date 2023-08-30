@@ -189,7 +189,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DrawableBase.h">
-      <Filter>Source Files\Drawable</Filter>
+      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
