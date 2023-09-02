@@ -1,7 +1,7 @@
 Chili Graphics Exception
-[Error Code] 0x80070057 (2147942487)
-[Error String] E_INVALIDARG
-[Description] The parameter is incorrect.
+[Error Code] 0x80070002 (2147942402)
+[Error String] ERROR_FILE_NOT_FOUND
+[Description] The system cannot find the file specified.
 
-[File]C:\Users\ukrgr\source\repos\hw3d\hw3d\Graphics.cpp
-[Line]246
+[File]C:\Users\ukrgr\source\repos\hw3d\hw3d\VertexShader.cpp
+[Line]9

@@ -221,7 +221,7 @@ std::string Graphics::HrException::GetErrorString() const noexcept
 
 std::string Graphics::HrException::GetErrorDescription() const noexcept
 {
-	wchar_t buf[1024];
+	wchar_t buf[4096];
 	DXGetErrorDescription(hr, buf, sizeof(buf));
 	std::wstring wbuf(buf);
 	std::string msg(wbuf.begin(), wbuf.end());

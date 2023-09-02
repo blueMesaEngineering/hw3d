@@ -22,7 +22,7 @@ public:
 		vertices.emplace_back(-side, side, side); // 6 
 		vertices.emplace_back(side, side, side); // 7  
 
-		std::vector<V> Verts(vertices.size());
+		std::vector<V> verts(vertices.size());
 		for (size_t i = 0; i < vertices.size(); i++)
 		{
 			verts[i].pos = vertices[i];

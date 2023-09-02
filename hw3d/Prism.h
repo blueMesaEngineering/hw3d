@@ -59,9 +59,9 @@ public:
 			const auto i = iLong * 2;
 			const auto mod = longDiv * 2;
 			indices.push_back(i + 2);
-			indices.push_back((i + 2_ % mod + 2);
+			indices.push_back((i + 2) % mod + 2);
 			indices.push_back(i + 1 + 2);
-			indices.push_back((i + 2_ % mod + 2);
+			indices.push_back((i + 2) % mod + 2);
 			indices.push_back((i + 3) % mod + 2);
 			indices.push_back(i + 1 + 2);
 		}
@@ -75,7 +75,7 @@ public:
 			indices.push_back(iCenterNear);
 			indices.push_back((i + 2) % mod + 2);
 			indices.push_back(iCenterFar);
-			inidces.push_back(i + 1 + 2);
+			indices.push_back(i + 1 + 2);
 			indices.push_back((i + 3) % mod + 2);
 		}
 
