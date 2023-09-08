@@ -11,7 +11,7 @@ namespace Gdiplus
 
 #pragma comment(lib, "gdiplus.lib")
 
-Surface::Surface(unsigned in width, unsigned int height, unsigned int pitch) noexcept
+Surface::Surface(unsigned int width, unsigned int height, unsigned int pitch) noexcept
 	:
 	pBuffer(std::make_unique<Color[]>(pitch* height)),
 	width(width),
@@ -100,9 +100,9 @@ Surface Surface::FromFile(const std::string& name)
 	{
 		// Convert filename to wide string (for Gdiplus)
 		wchar_t wideName[512];
-		mbstowcs_s(nullptr, wideName, name.c_str(), TRUNCATE);
+		mbstowcs_s(nullptr, wideName, name.c_str(), _TRUNCATE);
 
-		Gdiplus::Bitmap(wideName);
+		Gdiplus::Bitmap bitmap(wideName);
 		if (bitmap.GetLastStatus() != Gdiplus::Status::Ok)
 		{
 			std::stringstream ss;
@@ -136,7 +136,7 @@ void Surface::Save(const std::string& filename) const
 
 			Gdiplus::ImageCodecInfo* pImageCodecInfo = nullptr;
 
-			Gdiplus::GetImageEncoderSize(&num, &size);
+			Gdiplus::GetImageEncodersSize(&num, &size);
 			if (size == 0)
 			{
 				std::stringstream ss;
@@ -148,7 +148,7 @@ void Surface::Save(const std::string& filename) const
 			if (pImageCodecInfo == nullptr)
 			{
 				std::stringstream ss;
-				ss << "Saving surface to [" << filename << "]: failes to get encoder; failed to allocate memory.";
+				ss << "Saving surface to [" << filename << "]: failed to get encoder; failed to allocate memory.";
 				throw Exception(__LINE__, __FILE__, ss.str());
 			}
 
@@ -176,7 +176,7 @@ void Surface::Save(const std::string& filename) const
 
 	// Convert filename to wide string (for Gdiplus)
 	wchar_t wideName[512];
-	mbstowcs_s(nullptr, wideName, filename.c_str(), TRUNCATE);
+	mbstowcs_s(nullptr, wideName, filename.c_str(), _TRUNCATE);
 
 	Gdiplus::Bitmap bitmap(width, height, width * sizeof(Color), PixelFormat32bppARGB, (BYTE*)pBuffer.get());
 	if (bitmap.Save(wideName, &bmpID, nullptr) != Gdiplus::Status::Ok)
@@ -187,7 +187,7 @@ void Surface::Save(const std::string& filename) const
 	}
 }
 
-void Surface::Copy(const Surface& src) noexcept(!IS_DEBUG)
+void Surface::Copy(const Surface& src) noexcept //(!IS_DEBUG)
 {
 	assert(width == src.width);
 	assert(height == src.height);
@@ -203,7 +203,7 @@ Surface::Surface(unsigned int width, unsigned int height, std::unique_ptr<Color[
 
 
 // Surface exception stuff
-Suface::Exception::Exception(int line, const char* file, std::string note) noexcept
+Surface::Exception::Exception(int line, const char* file, std::string note) noexcept
 	:
 	ChiliException(line, file),
 	note(std::move(note))

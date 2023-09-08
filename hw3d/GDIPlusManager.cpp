@@ -19,7 +19,7 @@ GDIPlusManager::GDIPlusManager()
 		Gdiplus::GdiplusStartupInput input;
 		input.GdiplusVersion = 1;
 		input.SuppressBackgroundThread = false;
-		Gdiplus::GdiplusStartup(&token & input, nullptr);
+		Gdiplus::GdiplusStartup(&token, &input, nullptr);
 	}
 }
 
