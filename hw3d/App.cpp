@@ -9,6 +9,9 @@
 #include "ChiliMath.h"
 #include "Surface.h"
 #include "GDIPlusManager.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
 
 GDIPlusManager gdipm;
 
@@ -95,7 +98,7 @@ App::App()
 	};
 
 	drawables.reserve(nDrawables);
-	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{wnd.Gfx()});
+	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{ wnd.Gfx() });
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
@@ -109,6 +112,21 @@ void App::DoFrame()
 		d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
 		d->Draw(wnd.Gfx());
 	}
+
+	// Imgui stuff
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	static bool show_demo_window = true;
+	if (show_demo_window)
+	{
+		ImGui::ShowDemoWindow(&show_demo_window);
+	}
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	// Present
 	wnd.Gfx().EndFrame();
 }
 

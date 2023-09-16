@@ -21,7 +21,11 @@
 #include <sstream>
 #include "resource.h"
 #include "WindowsThrowMacros.h"
+#include "imgui/imgui_impl_win32.h"
 
+//#if 0
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//#endif
 
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
@@ -108,12 +112,15 @@ Window::Window(int width, int height, const wchar_t* name)
 
 	// newly created windows start off as hidden
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	// Init ImGui Win32 Impl
+	ImGui_ImplWin32_Init(hWnd);
 	// create graphics object
 	pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Window::~Window()
 {
+	ImGui_ImplWin32_Shutdown();
 	DestroyWindow(hWnd);
 }
 
@@ -185,6 +192,11 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+	{
+		return true;
+	}
+
 	switch (msg)
 	{
 		// We don't want the DefProc to handle this message because 
@@ -230,7 +242,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			}
 		}
 		// not in client -> log move / maintain capture if button down
-		else {
+		else
+		{
 			if (wParam & (MK_LBUTTON | MK_RBUTTON))
 			{
 				mouse.OnMouseMove(pt.x, pt.y);
