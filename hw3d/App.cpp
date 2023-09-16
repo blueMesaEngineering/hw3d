@@ -3,6 +3,7 @@
 #include "Pyramid.h"
 #include "Box.h"
 #include "Sheet.h"
+#include "SkinnedBox.h"
 #include <memory>
 #include <algorithm>
 #include "ChiliMath.h"
@@ -66,6 +67,15 @@ App::App()
 					, odist
 					, rdist
 				);
+			case 4:
+				return std::make_unique<SkinnedBox>(
+					gfx
+					, rng
+					, adist
+					, ddist
+					, odist
+					, rdist
+				);
 			default:
 				assert(false && "Bad drawable type in factory");
 				return {};
@@ -73,7 +83,7 @@ App::App()
 		}
 	private:
 		Graphics& gfx;
-		std::mt19937 rng{std::random_device{}()};
+		std::mt19937 rng{ std::random_device{}() };
 		std::uniform_real_distribution<float> adist{ 0.0f, PI * 2.0f };
 		std::uniform_real_distribution<float> ddist{ 0.0f, PI * 0.5f };
 		std::uniform_real_distribution<float> odist{ 0.0f, PI * 0.08f };
@@ -81,14 +91,11 @@ App::App()
 		std::uniform_real_distribution<float> bdist{ 0.4f, 3.0f };
 		std::uniform_int_distribution<int> latdist{ 5, 20 };
 		std::uniform_int_distribution<int> longdist{ 10, 40 };
-		std::uniform_int_distribution<int> typedist{ 0, 3 };
+		std::uniform_int_distribution<int> typedist{ 0, 4 };
 	};
 
-	Factory f(wnd.Gfx());
 	drawables.reserve(nDrawables);
-	std::generate_n(std::back_inserter(drawables), nDrawables, f);
-
-	//const auto s = Surface::FromFile("Images\\kappa50.png");
+	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{wnd.Gfx()});
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
