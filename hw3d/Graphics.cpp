@@ -218,7 +218,7 @@ Graphics::HrException::HrException(int line, const char* file, HRESULT hr, std::
 
 const char* Graphics::HrException::what() const noexcept
 {
-	std::ofstream outputFileStream("HrException-what.txt");
+	std::ofstream outputFileStream("Graphics-HrException-what.txt");
 	std::ostringstream oss;
 	oss << GetType() << std::endl
 		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()

@@ -22,6 +22,7 @@
 #include "resource.h"
 #include "WindowsThrowMacros.h"
 #include "imgui/imgui_impl_win32.h"
+#include <fstream>
 
 //#if 0
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -175,7 +176,7 @@ LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		// set message proc to normal (non-setup) handler now that setup is finished
 		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));  // What do you mean? Now we can finally play the game....
-		// forward message to window class handler
+		// forward message to window instance handler
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
 	// if we get a message before the WM_NCCREATE message, handle with default handler
@@ -184,7 +185,7 @@ LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	// retrieve ptr to window class
+	// retrieve ptr to window instance
 	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	// forward message to window instance handler
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
@@ -196,6 +197,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		return true;
 	}
+	//const auto imio = ImGui::GetIO(); // This is nice helpful shorthand, but Visual Studio 2022 does not seem to like it. A pop up info box for this "auto" type indicates that "auto doesn't deduce references. A possibly unintended copy is being made." Whether this is the case or not, using imio.WantCaptureKeyboard and imio.WantCaptureMouse yields a runtime error that I could not solve. So I just used the ImGui:: syntax for all the conditionals where WantCapture* is specified.  NDG 202309162007
 
 	switch (msg)
 	{
@@ -213,16 +215,31 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_KEYDOWN:
 		// syskey commands need to be handled to track ALT key (VK_MENU)
 	case WM_SYSKEYDOWN:
-		if (!(lParam & 0x40000000 || kbd.AutorepeatIsEnabled()))  // Filter autorepeat
+		// Stifle this keyboard message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureKeyboard)
+		//{
+		//	break;
+		//}
+		if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled())  // Filter autorepeat
 		{
 			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
 		}
 		break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
+		// Stifle this keyboard message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureKeyboard)
+		//{
+		//	break;
+		//}
 		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
+		// Stifle this keyboard message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureKeyboard)
+		//{
+		//	break;
+		//}
 		kbd.OnChar(static_cast<unsigned char>(wParam));
 		break;
 		/******************** END KEYBOARD MESSAGES ********************/
@@ -230,6 +247,11 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		/******************** MOUSE MESSAGES ********************/
 	case WM_MOUSEMOVE:
 	{
+		// Stifle this mouse message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureMouse)
+		//{
+		//	break;
+		//}
 		const POINTS pt = MAKEPOINTS(lParam);
 		// In client region -> log move, and log enter + capture mouse (if not previously in window)
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
@@ -259,19 +281,34 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_LBUTTONDOWN:
 	{
+		SetForegroundWindow(hWnd);
+		// Stifle this mouse message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureMouse)
+		//{
+		//	break;
+		//}
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftPressed(pt.x, pt.y);
-		SetForegroundWindow(hWnd);
 		break;
 	}
 	case WM_RBUTTONDOWN:
 	{
+		// Stifle this mouse message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureMouse)
+		//{
+		//	break;
+		//}
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnRightPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
+		// Stifle this mouse message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureMouse)
+		//{
+		//	break;
+		//}
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnLeftReleased(pt.x, pt.y);
 		// Release mouse if outside of window
@@ -284,6 +321,11 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_RBUTTONUP:
 	{
+		// Stifle this mouse message if Imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureMouse)
+		//{
+		//	break;
+		//}
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.OnRightReleased(pt.x, pt.y);
 		// Release mouse if outside of window
@@ -296,6 +338,11 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}
 	case WM_MOUSEWHEEL:
 	{
+		// Stifle this mouse message if imgui wants to capture
+		//if (ImGui::GetIO().WantCaptureMouse)
+		//{
+		//	break;
+		//}
 		const POINTS pt = MAKEPOINTS(lParam);
 		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
@@ -318,11 +365,20 @@ const char* Window::HrException::what() const noexcept
 {
 	std::ostringstream oss;
 	oss << GetType() << std::endl
-		<< "[Error Code] " << GetErrorCode() << std::endl
+		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode() << std::endl
 		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
 		<< "[Description] " << GetErrorDescription() << std::endl
 		<< GetOriginString();
 	whatBuffer = oss.str();
+
+	std::ofstream outputFileStream("Window-HrException-What.txt");
+	outputFileStream << GetType() << std::endl
+		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode() << std::endl
+		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
+		<< "[Description] " << GetErrorDescription() << std::endl
+		<< GetOriginString();
+	outputFileStream.close();
+
 	return whatBuffer.c_str();
 }
 
