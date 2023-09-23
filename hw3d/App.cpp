@@ -11,6 +11,8 @@
 #include "GDIPlusManager.h"
 #include "imgui/imgui.h"
 
+namespace dx = DirectX;
+
 GDIPlusManager gdipm;
 
 App::App()
@@ -99,20 +101,13 @@ App::App()
 	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{ wnd.Gfx() });
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	wnd.Gfx().SetCamera(DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 }
 
 void App::DoFrame()
 {
 	const auto dt = timer.Mark() * speed_factor;
 
-	if (wnd.kbd.KeyIsPressed(VK_SPACE))
-	{
-		//wnd.Gfx().DisableImgui();
-	}
-	else
-	{
-		wnd.Gfx().EnableImgui();
-	}
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 
 	for (auto& d : drawables)
@@ -121,17 +116,19 @@ void App::DoFrame()
 		d->Draw(wnd.Gfx());
 	}
 
+	static char buffer[1024];
+
 	// Input window to control simulation shpeedle
 
-	if (wnd.Gfx().IsImguiEnabled())
-	//if(ImGui::Begin("Simulation Speed"))
+	//if (wnd.Gfx().IsImguiEnabled())
+	if(ImGui::Begin("Simulation Speed"))
 	{
-		ImGui::Begin("Simulation Speed");
+		//ImGui::Begin("Simulation Speed");
 		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING");
-		ImGui::End();
 	}
+	ImGui::End();
 
 	// Present
 	wnd.Gfx().EndFrame();
