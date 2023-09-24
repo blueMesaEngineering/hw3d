@@ -197,7 +197,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		return true;
 	}
-	//const auto imio = ImGui::GetIO(); // This is nice helpful shorthand, but Visual Studio 2022 does not seem to like it. A pop up info box for this "auto" type indicates that "auto doesn't deduce references. A possibly unintended copy is being made." Whether this is the case or not, using imio.WantCaptureKeyboard and imio.WantCaptureMouse yields a runtime error that I could not solve. So I just used the ImGui:: syntax for all the conditionals where WantCapture* is specified.  NDG 202309162007
+	const auto& imio = ImGui::GetIO(); // This is nice helpful shorthand, but Visual Studio 2022 does not seem to like it. A pop up info box for this "auto" type indicates that "auto doesn't deduce references. A possibly unintended copy is being made." Whether this is the case or not, using imio.WantCaptureKeyboard and imio.WantCaptureMouse yields a runtime error that I could not solve. So I just used the ImGui:: syntax for all the conditionals where WantCapture* is specified.  NDG 202309162007
 
 	switch (msg)
 	{
@@ -216,7 +216,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		// syskey commands need to be handled to track ALT key (VK_MENU)
 	case WM_SYSKEYDOWN:
 		// Stifle this keyboard message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureKeyboard)
+		if (imio.WantCaptureKeyboard)
 		{
 			break;
 		}
@@ -228,7 +228,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		// Stifle this keyboard message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureKeyboard)
+		if (imio.WantCaptureKeyboard)
 		{
 			break;
 		}
@@ -236,7 +236,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		break;
 	case WM_CHAR:
 		// Stifle this keyboard message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureKeyboard)
+		if (imio.WantCaptureKeyboard)
 		{
 			break;
 		}
@@ -248,7 +248,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_MOUSEMOVE:
 	{
 		// Stifle this mouse message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureMouse)
+		if (imio.WantCaptureMouse)
 		{
 			break;
 		}
@@ -283,7 +283,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	{
 		SetForegroundWindow(hWnd);
 		// Stifle this mouse message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureMouse)
+		if (imio.WantCaptureMouse)
 		{
 			break;
 		}
@@ -294,7 +294,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_RBUTTONDOWN:
 	{
 		// Stifle this mouse message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureMouse)
+		if (imio.WantCaptureMouse)
 		{
 			break;
 		}
@@ -305,7 +305,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_LBUTTONUP:
 	{
 		// Stifle this mouse message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureMouse)
+		if (imio.WantCaptureMouse)
 		{
 			break;
 		}
@@ -322,7 +322,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_RBUTTONUP:
 	{
 		// Stifle this mouse message if Imgui wants to capture
-		if (ImGui::GetIO().WantCaptureMouse)
+		if (imio.WantCaptureMouse)
 		{
 			break;
 		}
@@ -339,7 +339,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_MOUSEWHEEL:
 	{
 		// Stifle this mouse message if imgui wants to capture
-		if (ImGui::GetIO().WantCaptureMouse)
+		if (imio.WantCaptureMouse)
 		{
 			break;
 		}
