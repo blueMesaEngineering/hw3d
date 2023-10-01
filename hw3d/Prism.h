@@ -161,22 +161,22 @@ public:
 		// Near base indices
 		for (unsigned short iLong = 0; iLong < longDiv; iLong++)
 		{
-			const auto i = iLong * 2;
-			const auto mod = longDiv * 2;
+			const auto i = iLong;
+			const auto mod = longDiv;
 			// Near
 			indices.push_back(i + iBaseNear);
 			indices.push_back(iCenterNear);
-			indices.push_back((i + 2) % mod + iBaseNear);
+			indices.push_back((i + 1) % mod + iBaseNear);
 		}
 		// Far base indices
 		for (unsigned short iLong = 0; iLong < longDiv; iLong++)
 		{
-			const auto i = iLong * 2;
-			const auto mod = longDiv * 2;
+			const auto i = iLong;
+			const auto mod = longDiv;
 			// Far
 			indices.push_back(iCenterFar);
 			indices.push_back(i + iBaseFar);
-			indices.push_back((i + 3) % mod + iBaseFar);
+			indices.push_back((i + 1) % mod + iBaseFar);
 		}
 		// Fusilage indices
 		for (unsigned short iLong = 0; iLong < longDiv; iLong++)
