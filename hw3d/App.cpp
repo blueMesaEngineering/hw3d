@@ -94,6 +94,14 @@ App::App()
 
 	drawables.reserve(nDrawables);
 	std::generate_n(std::back_inserter(drawables), nDrawables, Factory{ wnd.Gfx() });
+	// Init box pointers for editing parameters
+	for (auto& pd : drawables)
+	{
+		if (auto pb = dynamic_cast<Box*>(pd.get()))
+		{
+			boxes.push_back(pb);
+		}
+	}
 
 	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 }
@@ -124,6 +132,9 @@ void App::DoFrame()
 	// ImGui windows to control camera and light
 	cam.SpawnControlWindow();
 	light.SpawnControlWindow();
+
+	// Imgui window to adjust box instance parameters
+	boxes.front()->SpawnControlWindow(69, wnd.Gfx());
 
 	// Present
 	wnd.Gfx().EndFrame();

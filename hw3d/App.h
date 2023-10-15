@@ -20,6 +20,7 @@ private:
 	ChiliTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
 	//bool show_demo_window = true;
+	std::vector<class Box*> boxes;
 	float speed_factor = 1.0f;
 	Camera cam;
 	PointLight light;
