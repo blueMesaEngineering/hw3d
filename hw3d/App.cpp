@@ -133,8 +133,51 @@ void App::DoFrame()
 	cam.SpawnControlWindow();
 	light.SpawnControlWindow();
 
-	// Imgui window to adjust box instance parameters
-	boxes.front()->SpawnControlWindow(69, wnd.Gfx());
+	// Imgui window to open box windows
+	if (ImGui::Begin("Boxes"))
+	{
+		using namespace std::string_literals;
+		const auto preview = comboBoxIndex ? std::to_string(*comboBoxIndex) : "Choose a box..."s;
+		
+		if (ImGui::BeginCombo("Box Number", preview.c_str()))
+		{
+			for (int i = 0; i < boxes.size(); i++)
+			{
+				const bool selected = comboBoxIndex == i;   // No, this is not a typo here.  In the Chili Framework code, 
+															//	there IS a pointer attached to comboBoxIndex, so there, it is
+															//  *comboBoxIndex.  However, due to a change in how <optional>
+															//  is implemented in C++ 20/22 (after C++ 17, in which the Chili
+															//	Framework is originally written), I was getting runtime errors
+															//  because <optional> was not allowed to be accessed when it was
+															//  still nullptr. <optional> line 186 was the place where the 
+															//	error was being thrown.  So after attempting other methods for
+															//	initializing comboBoxIndex before this point, I tried removing
+															//  the pointer and VIOLA - crisis averted.  Woot... 
+															//	NDG 2023.10.17:2011
+				if (ImGui::Selectable(std::to_string(i).c_str(), selected))
+				{
+					comboBoxIndex = i;
+				}
+				if (selected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+		if (ImGui::Button("Spawn Control Window") && comboBoxIndex)
+		{
+			boxControlIds.insert(*comboBoxIndex);
+			comboBoxIndex.reset();
+		}
+	}
+	ImGui::End();
+
+	// ImGui box attribute control windows
+	for (auto id : boxControlIds)
+	{
+		boxes[id]->SpawnControlWindow(id, wnd.Gfx());
+	}
 
 	// Present
 	wnd.Gfx().EndFrame();

@@ -4,6 +4,7 @@
 #include "ImguiManager.h"
 #include "Camera.h"
 #include "PointLight.h"
+#include <set>
 
 class App
 {
@@ -25,4 +26,6 @@ private:
 	Camera cam;
 	PointLight light;
 	static constexpr size_t nDrawables = 180;
+	std::optional<int> comboBoxIndex;
+	std::set<int> boxControlIds;
 };
