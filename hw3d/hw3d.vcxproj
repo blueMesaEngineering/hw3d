@@ -217,6 +217,7 @@
     <Image Include="Images\kappa50.png" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include=".gitignore" />
     <Text Include="tests.txt" />
   </ItemGroup>
   <ItemGroup>

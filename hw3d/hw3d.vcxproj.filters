@@ -624,6 +624,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="tests.txt" />
+    <Text Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
