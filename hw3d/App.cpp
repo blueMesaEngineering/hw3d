@@ -13,10 +13,20 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "VertexLayout.h"
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
+
+void f()
+{
+	VertexLayout v1;
+	v1.Append<VertexLayout::Normal>();
+	VertexBuffer vb(std::move(v1));
+	vb.EmplaceBack(dx::XMFLOAT3{ 1.0f, 1.0f, 5.0f }, dx::XMFLOAT3{ 2.0f, 1.0f, 4.0f });
+	auto pos = vb[0].Attr<VertexLayout::Position3D>();
+}
 
 App::App()
 	:
