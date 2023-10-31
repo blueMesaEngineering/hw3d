@@ -51,6 +51,8 @@ App::App()
 	wnd(800, 600, L"The Donkey Fart Box - Now with RAMEN!"),
 	light(wnd.Gfx())
 {
+	f();
+
 	class Factory
 
 	{
