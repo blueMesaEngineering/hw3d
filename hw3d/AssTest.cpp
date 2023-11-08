@@ -29,7 +29,7 @@ AssTest::AssTest(Graphics& gfx
 		));
 
 		Assimp::Importer imp;
-		const auto pModel = imp.ReadFile("models\\suzanne.obj"
+		const auto pModel = imp.ReadFile("models\\LEGO-Man.obj"
 			, aiProcess_Triangulate
 			| aiProcess_JoinIdenticalVertices
 		);
