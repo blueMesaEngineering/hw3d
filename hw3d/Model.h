@@ -21,7 +21,7 @@ public:
 			if (auto pi = dynamic_cast<IndexBuffer*>(pb.get()))
 			{
 				AddIndexBuffer(std::unique_ptr<IndexBuffer>{pi});
-					pb.release();
+				pb.release();
 			}
 			else
 			{
@@ -96,6 +96,11 @@ public:
 
 		pRoot = ParseNode(*pScene->mRootNode);
 	}
+	void Draw(Graphics& gfx, DirectX::FXMMATRIX transform) const
+	{
+		pRoot->Draw(gfx, transform);
+	}
+private:
 	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh)
 	{
 		namespace dx = DirectX;
@@ -174,10 +179,7 @@ public:
 
 		return pNode;
 	}
-	void Draw(Graphics& gfx) const
-	{
-		pRoot->Draw(gfx, DirectX::XMMatrixIdentity());
-	}
+
 private:
 	std::unique_ptr<Node> pRoot;
 	std::vector<std::unique_ptr<Mesh>> meshPtrs;
