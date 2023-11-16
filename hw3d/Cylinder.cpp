@@ -1,6 +1,6 @@
 #include "Cylinder.h"
 #include "Prism.h"
-#include "BindableBase.h"
+#include "BindableCommon.h"
 
 Cylinder::Cylinder(
 	Graphics& gfx

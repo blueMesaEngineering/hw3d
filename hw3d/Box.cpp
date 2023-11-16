@@ -1,5 +1,7 @@
+/*
+
 #include "Box.h"
-#include "BindableBase.h"
+#include "BindableCommon.h"
 #include "GraphicsThrowMacros.h"
 #include "Cube.h"
 #include "imgui/imgui.h"
@@ -109,3 +111,4 @@ void Box::SyncMaterial(Graphics& gfx) noexcept //(!IS_DEBUG)
 	assert(pConstPS != nullptr);
 	pConstPS->Update(gfx, materialConstants);
 }
+*/
