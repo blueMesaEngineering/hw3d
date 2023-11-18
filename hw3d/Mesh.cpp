@@ -106,16 +106,19 @@ void Node::ShowTree(int& nodeIndexTracked, std::optional<int>& selectedIndex, No
 	const auto node_flags = ImGuiTreeNodeFlags_OpenOnArrow
 		| ((currentNodeIndex == selectedIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0)
 		| ((childPtrs.size() == 0) ? ImGuiTreeNodeFlags_Leaf : 0);
-	// If tree node expanded, recursively render all children
-	if (ImGui::TreeNodeEx((void*)(intptr_t)currentNodeIndex, node_flags, name.c_str()))
+	// Render this node
+	const auto expanded = ImGui::TreeNodeEx(
+		(void*)(intptr_t)currentNodeIndex, node_flags, name.c_str()
+	);
+	// Processing for selecting node
+	if (ImGui::IsItemClicked())
 	{
-		// Detecting / setting selected node
-		if (ImGui::IsItemClicked())
-		{
-			selectedIndex = currentNodeIndex;
-			pSelectedNode = const_cast<Node*>(this);
-		}
-
+		selectedIndex = currentNodeIndex;
+		pSelectedNode = const_cast<Node*>(this);
+	}
+	// Recursive rendering of open node's children
+	if (expanded)
+	{
 		for (const auto& pChild : childPtrs)
 		{
 			pChild->ShowTree(nodeIndexTracked, selectedIndex, pSelectedNode);
