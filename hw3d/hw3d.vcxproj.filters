@@ -165,9 +165,6 @@
     <ClCompile Include="SolidSphere.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="AssTest.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -266,20 +263,8 @@
     <ClInclude Include="Sphere.h">
       <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Prism.h">
-      <Filter>Header Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="ChiliMath.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cone.h">
-      <Filter>Header Files\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Header Files\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Plane.h">
-      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="GDIPlusManager.h">
       <Filter>Header Files</Filter>
@@ -330,9 +315,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SolidSphere.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="TestObject.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="assimp\include\assimp\aabb.h">
@@ -577,9 +559,6 @@
     </ClInclude>
     <ClInclude Include="assimp\include\assimp\Compiler\pushpack1.h">
       <Filter>assimp\include\assimp\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="AssTest.h">
-      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Header Files</Filter>

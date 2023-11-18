@@ -133,6 +133,17 @@ void Window::SetTitle(const std::wstring& title)
 	}
 }
 
+void Window::EnableCursor()
+{
+	cursorEnabled = true;
+	ShowCursor();
+}
+
+void Window::DisableCursor()
+{
+	cursorEnabled = false;
+	HideCursor();
+}
 std::optional<int> Window::ProcessMessages() noexcept
 {
 	MSG msg;
@@ -162,6 +173,16 @@ Graphics& Window::Gfx()
 		throw CHWND_NOGFX_EXCEPT();
 	}
 	return *pGfx;
+}
+
+void Window::HideCursor()
+{
+	while (::ShowCursor(FALSE) >= 0);
+}
+
+void Window::ShowCursor()
+{
+	while (::ShowCursor(TRUE) < 0);
 }
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -353,6 +374,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
+
 
 // Window Exception Stuff
 Window::HrException::HrException(int line, const char* file, HRESULT hr) noexcept
