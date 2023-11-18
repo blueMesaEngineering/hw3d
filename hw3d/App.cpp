@@ -13,10 +13,10 @@ GDIPlusManager gdipm;
 
 App::App()
 	:
-	wnd(800, 600, L"The Donkey Fart Box - Now with RAMEN!"),
+	wnd(1280, 720, L"The Donkey Fart Box - Now with RAMEN!"),
 	light(wnd.Gfx())
 {
-	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
 }
 
 void App::DoFrame()
