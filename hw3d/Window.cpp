@@ -137,13 +137,16 @@ void Window::EnableCursor()
 {
 	cursorEnabled = true;
 	ShowCursor();
+	EnableImGuiMouse();
 }
 
 void Window::DisableCursor()
 {
 	cursorEnabled = false;
 	HideCursor();
+	DisableImGuiMouse();
 }
+
 std::optional<int> Window::ProcessMessages() noexcept
 {
 	MSG msg;
@@ -183,6 +186,16 @@ void Window::HideCursor()
 void Window::ShowCursor()
 {
 	while (::ShowCursor(TRUE) < 0);
+}
+
+void Window::EnableImGuiMouse()
+{
+	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+}
+
+void Window::DisableImGuiMouse()
+{
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -268,6 +281,17 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		/******************** MOUSE MESSAGES ********************/
 	case WM_MOUSEMOVE:
 	{
+		// Cursorless exclusive gets first dibs
+		if (!cursorEnabled)
+		{
+			if (!mouse.IsInWindow())
+			{
+				SetCapture(hWnd);
+				mouse.OnMouseEnter();
+				HideCursor();
+			}
+			break;
+		}
 		// Stifle this mouse message if Imgui wants to capture
 		if (imio.WantCaptureMouse)
 		{
