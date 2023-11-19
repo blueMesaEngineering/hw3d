@@ -133,18 +133,20 @@ void Window::SetTitle(const std::wstring& title)
 	}
 }
 
-void Window::EnableCursor()
+void Window::EnableCursor() noexcept
 {
 	cursorEnabled = true;
 	ShowCursor();
 	EnableImGuiMouse();
+	FreeCursor();
 }
 
-void Window::DisableCursor()
+void Window::DisableCursor() noexcept
 {
 	cursorEnabled = false;
 	HideCursor();
 	DisableImGuiMouse();
+	ConfineCursor();
 }
 
 std::optional<int> Window::ProcessMessages() noexcept
@@ -178,29 +180,42 @@ Graphics& Window::Gfx()
 	return *pGfx;
 }
 
-void Window::HideCursor()
+void Window::ConfineCursor() noexcept
+{
+	RECT rect;
+	GetClientRect(hWnd, &rect);
+	MapWindowPoints(hWnd, nullptr, reinterpret_cast<POINT*>(&rect), 2);
+	ClipCursor(&rect);
+}
+
+void Window::FreeCursor() noexcept
+{
+	ClipCursor(nullptr);
+}
+
+void Window::HideCursor() noexcept
 {
 	while (::ShowCursor(FALSE) >= 0);
 }
 
-void Window::ShowCursor()
+void Window::ShowCursor() noexcept
 {
 	while (::ShowCursor(TRUE) < 0);
 }
 
-void Window::EnableImGuiMouse()
+void Window::EnableImGuiMouse() noexcept
 {
 	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
 }
 
-void Window::DisableImGuiMouse()
+void Window::DisableImGuiMouse() noexcept
 {
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	// use create parameter passed in from CreateWindowEx() to store window class pointer
+	// use create parameter passed in from CreateWindowEx() to store window class pointer at WinAPI side
 	if (msg == WM_NCCREATE)
 	{
 		// extract ptr to window class from creation data
@@ -281,6 +296,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		/******************** MOUSE MESSAGES ********************/
 	case WM_MOUSEMOVE:
 	{
+		const POINTS pt = MAKEPOINTS(lParam);
 		// Cursorless exclusive gets first dibs
 		if (!cursorEnabled)
 		{
@@ -297,7 +313,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		{
 			break;
 		}
-		const POINTS pt = MAKEPOINTS(lParam);
 		// In client region -> log move, and log enter + capture mouse (if not previously in window)
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
@@ -465,6 +480,7 @@ std::string Window::HrException::GetErrorDescription() const noexcept
 {
 	return Exception::TranslateErrorCode(hr);
 }
+
 
 const char* Window::NoGfxException::GetType() const noexcept
 {
