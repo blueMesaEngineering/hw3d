@@ -259,6 +259,23 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_KILLFOCUS:
 		kbd.ClearState();
 		break;
+	case WM_ACTIVATE:
+		OutputDebugString((LPCWSTR)"activeate\n");
+		// confine/free cursor on window to foreground/background if cursor disabled
+		if (!cursorEnabled)
+		{
+			if (wParam & WA_ACTIVE)
+			{
+				OutputDebugString((LPCWSTR)"activeate => confine\n");
+				ConfineCursor();
+			}
+			else
+			{
+				OutputDebugString((LPCWSTR)"activeate => free\n");
+				FreeCursor();
+			}
+		}
+		break;
 
 		/******************** KEYBOARD MESSAGES ********************/
 	case WM_KEYDOWN:
