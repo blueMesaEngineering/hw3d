@@ -11,13 +11,19 @@ Camera::Camera() noexcept
 
 DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 {
-	return dx::XMMatrixTranslation(
-		pos.x
-		, -pos.y
-		, -pos.z
-	) * dx::XMMatrixRotationRollPitchYaw(
-		-pitch, -yaw, 0.0f
+	using namespace dx;
+
+	const dx::XMVECTOR forwardBaseVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	// Apply the camera rotations to a base vector
+	const auto lookVector = XMVector3Transform(forwardBaseVector,
+		XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f)
 	);
+	// Generate camera transform (applied to all objects to arrange them relative
+	// to camera position/orientation in world) from cam position and direction
+	// camera "top" always faces towards +Y (cannot doa barrel roll)
+	const auto camPosition = XMLoadFloat3(&pos);
+	const auto camTarget = camPosition + lookVector;
+	return XMMatrixLookAtLH(camPosition, camTarget, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 }
 
 void Camera::SpawnControlWindow() noexcept
@@ -29,7 +35,7 @@ void Camera::SpawnControlWindow() noexcept
 		ImGui::SliderFloat("Y", &pos.y, -80.0f, 80.0f, "%.1f");
 		ImGui::SliderFloat("Z", &pos.z, -80.0f, 80.0f, "%.1f");
 		ImGui::Text("Orientation");
-		ImGui::SliderAngle("Pitch", &pitch, -90.0f, 90.0f);
+		ImGui::SliderAngle("Pitch", &pitch, 0.995f * -90.0f, 0.995f * 90.0f);
 		ImGui::SliderAngle("Yaw", &yaw, -180.0f, 180.0f);
 		if (ImGui::Button("Reset"))
 		{
