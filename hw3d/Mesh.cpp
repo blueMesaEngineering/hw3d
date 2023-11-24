@@ -5,7 +5,6 @@
 
 namespace dx = DirectX;
 
-
 ModelException::ModelException(int line, const char* file, std::string note) noexcept
 	:
 	ChiliException(line, file)
@@ -292,6 +291,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh)
 
 	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 }
+
 std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node) noexcept
 {
 	namespace dx = DirectX;
