@@ -1,3 +1,3 @@
-Loading image [Images\kappa50.png]: failed to load
+Loading image [models\nano_textured\]: failed to load
 105
 C:\Users\ukrgr\source\repos\hw3d\hw3d\Surface.cpp
