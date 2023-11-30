@@ -4,4 +4,4 @@ Chili Graphics Exception
 [Description] The system cannot find the file specified.
 
 [File]C:\Users\ukrgr\source\repos\hw3d\hw3d\PixelShader.cpp
-[Line]9
+[Line]12
