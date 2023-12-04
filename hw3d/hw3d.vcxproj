@@ -147,6 +147,7 @@
     <ClInclude Include="assimp\include\assimp\XMLTools.h" />
     <ClInclude Include="assimp\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableCommon.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChiliMath.h" />
