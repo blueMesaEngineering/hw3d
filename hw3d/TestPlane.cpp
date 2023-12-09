@@ -15,6 +15,7 @@ TestPlane::TestPlane(Graphics& gfx, float size)
 	AddBind(IndexBuffer::Resolve(gfx, geometryTag, model.indices));
 
 	AddBind(Texture::Resolve(gfx, "Images\\brickwall.jpg"));
+	AddBind(Texture::Resolve(gfx, "Images\\brickwall_normal.jpg", 1u));
 
 	auto pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
 	auto pvsbc = pvs->GetBytecode();
@@ -51,7 +52,7 @@ DirectX::XMMATRIX TestPlane::GetTransformXM() const noexcept
 
 void TestPlane::SpawnControlWindow(Graphics& gfx) noexcept
 {
-	if (ImGui::Begin("Plan"))
+	if (ImGui::Begin("Plane"))
 	{
 		ImGui::Text("Position");
 		ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.1f");
