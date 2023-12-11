@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /hw3d/imgui.ini
+/hw3d/Surface-Load-Exception.txt
