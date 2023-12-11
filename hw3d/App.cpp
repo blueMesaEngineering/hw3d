@@ -31,6 +31,7 @@ void App::DoFrame()
 	nano.Draw(wnd.Gfx());
 	nano2.Draw(wnd.Gfx());
 	light.Draw(wnd.Gfx());
+	plane.Draw(wnd.Gfx());
 
 	while (const auto e = wnd.kbd.ReadKey())
 	{

@@ -306,6 +306,9 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 	else
 	{
 		bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongPS.cso"));
+		//bindablePtrs.push_back(Texture::Resolve(gfx, "Images\\brickwall_normal.jpg", 1u));
+		//bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongPSNormalMap.cso"));
+		// ^^^ Fun little experiment. The code applies the normal map to the visor ONLY! Fascinating!!!  Looks rather cool tbh.... NDG 202312091443
 
 		struct PSMaterialConstant
 		{
