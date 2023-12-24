@@ -16,6 +16,8 @@ App::App()
 	wnd(1280, 720, L"The Donkey Fart Box - Now with RAMEN!"),
 	light(wnd.Gfx())
 {
+	wall.SetRootTransform(dx::XMMatrixTranslation(-1.5f, 0.0f, 0.0f));
+	tp.SetPos({ 1.5f, 0.0f, 0.0f });
 	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
 }
 
@@ -27,8 +29,10 @@ void App::DoFrame()
 	light.Bind(wnd.Gfx(), cam.GetMatrix());
 
 	wall.Draw(wnd.Gfx());
+	tp.Draw(wnd.Gfx());
 	//nano.Draw(wnd.Gfx());
 	light.Draw(wnd.Gfx());
+
 
 	while (const auto e = wnd.kbd.ReadKey())
 	{
