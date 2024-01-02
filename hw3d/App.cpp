@@ -1,54 +1,132 @@
 #include "App.h"
-#include "Box.h"
 #include <memory>
+#include <algorithm>
+#include "ChiliMath.h"
+#include "Surface.h"
+#include "GDIPlusManager.h"
+#include "imgui/imgui.h"
+#include "VertexBuffer.h"
+
+namespace dx = DirectX;
+
+GDIPlusManager gdipm;
 
 App::App()
 	:
-	wnd(800, 600, L"The Donkey Fart Box - Now with RAMEN!")
+	wnd(1280, 720, L"The Donkey Fart Box - Now with RAMEN!"),
+	light(wnd.Gfx())
 {
-	std::mt19937 rng(std::random_device{}());
-	std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
-	std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
-	std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 3.0f);
-	std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
-	for (auto i = 0; i < 80; i++)
+	//wall.SetRootTransform(dx::XMMatrixTranslation(-1.5f, 0.0f, 0.0f));
+	//tp.SetPos({ 1.5f, 0.0f, 0.0f });
+	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 40.0f));
+}
+
+void App::DoFrame()
+{
+	const auto dt = timer.Mark() * speed_factor;
+	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	wnd.Gfx().SetCamera(cam.GetMatrix());
+	light.Bind(wnd.Gfx(), cam.GetMatrix());
+
+	//wall.Draw(wnd.Gfx());
+	//tp.Draw(wnd.Gfx());
+	//nano.Draw(wnd.Gfx());
+	gobber.Draw(wnd.Gfx());
+	light.Draw(wnd.Gfx());
+
+	while (const auto e = wnd.kbd.ReadKey())
 	{
-		boxes.push_back(std::make_unique<Box>(
-			wnd.Gfx(), rng, adist,
-			ddist, odist, rdist
-			));
+		if (!e->IsPress())
+		{
+			continue;
+		}
+
+		switch (e->GetCode())
+		{
+		case VK_ESCAPE:
+			if (wnd.CursorEnabled())
+			{
+				wnd.DisableCursor();
+				wnd.mouse.EnableRaw();
+			}
+			else
+			{
+				wnd.EnableCursor();
+				wnd.mouse.DisableRaw();
+			}
+			break;
+		case VK_F1:
+			showDemoWindow = true;
+			break;
+		}
 	}
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+
+	if (!wnd.CursorEnabled())
+	{
+		if (wnd.kbd.KeyIsPressed('W'))
+		{
+			cam.Translate({ 0.0f, 0.0f, dt });
+		}
+		if (wnd.kbd.KeyIsPressed('A'))
+		{
+			cam.Translate({ -dt, 0.0f, 0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('S'))
+		{
+			cam.Translate({ 0.0f, 0.0f, -dt });
+		}
+		if (wnd.kbd.KeyIsPressed('D'))
+		{
+			cam.Translate({ dt, 0.0f, 0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('R'))
+		{
+			cam.Translate({ 0.0f, dt, 0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('F'))
+		{
+			cam.Translate({ 0.0f, -dt, 0.0f });
+		}
+	}
+
+	while (const auto delta = wnd.mouse.ReadRawDelta())
+	{
+		if (!wnd.CursorEnabled())
+		{
+			cam.Rotate((float)delta->x, (float)delta->y);
+		}
+	}
+
+	// ImGui windows
+	cam.SpawnControlWindow();
+	light.SpawnControlWindow();
+	ShowImguiDemoWindow();
+	gobber.ShowWindow(wnd.Gfx(), "gobber");
+	//wall.ShowWindow("Wall");
+	//tp.SpawnControlWindow(wnd.Gfx());
+	//nano.ShowWindow("Model 1");
+
+	// Present
+	wnd.Gfx().EndFrame();
+}
+
+void App::ShowImguiDemoWindow()
+{
+	if (showDemoWindow)
+	{
+		ImGui::ShowDemoWindow(&showDemoWindow);
+	}
 }
 
 App::~App()
 {}
 
+
 int App::DoStuff()
 {
-	//MSG msg;
-	//bool gResult;
-	//while ((gResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
-	//{
-	//	// TranslateMessage will post auxilliary WM_CHAR messages from key msgs
-	//	TranslateMessage(&msg);
-	//	DispatchMessage(&msg);
-
-	//	DoFrame();
-	//}
-
-	//// check if GetMessage call itself borked
-	//if (gResult == -1)
-	//{
-	//	throw CHWND_LAST_EXCEPT();
-	//}
-
-	//// wParam here is the value passed to PostQuitMessage
-	//return msg.wParam;
-
 	while (true)
 	{
-		// Process all messages pending, but not to block for new messages
+		// Process all messages pending, but to not block for new messages
 		if (const auto ecode = Window::ProcessMessages())
 		{
 			// if return optional has value, means we're quitting so return exit code
@@ -56,28 +134,4 @@ int App::DoStuff()
 		}
 		DoFrame();
 	}
-}
-
-void App::DoFrame()
-{
-	//const float c = sin(timer.Peek()) / 2.0f + 0.5f;
-	//wnd.Gfx().ClearBuffer(c, c, 1.0f);
-	//wnd.Gfx().DrawTestTriangle(
-	//	timer.Peek()
-	//	, 0.0f
-	//	, 0.0f
-	//);
-	//wnd.Gfx().DrawTestTriangle(
-	//	timer.Peek()
-	//	, wnd.mouse.GetPosX() / 400.0f - 1.0f
-	//	, wnd.mouse.GetPosY() / -300.0f + 1.0f
-	//);
-	auto dt = timer.Mark();
-	wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
-	for (auto& b : boxes)
-	{
-		b->Update(dt);
-		b->Draw(wnd.Gfx());
-	}
-	wnd.Gfx().EndFrame();
 }

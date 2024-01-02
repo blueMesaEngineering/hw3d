@@ -1,5 +1,6 @@
 #include "ChiliException.h"
 #include <sstream>
+#include <fstream>
 
 ChiliException::ChiliException(int line, const char* file) noexcept
 	:
@@ -9,10 +10,16 @@ ChiliException::ChiliException(int line, const char* file) noexcept
 
 const char* ChiliException::what() const noexcept
 {
+	std::ofstream outputFileStream("ChiliException-HrException-what.txt");
+	outputFileStream << GetType() << std::endl
+		<< GetOriginString();
+	outputFileStream.close();
+
 	std::ostringstream oss;
 	oss << GetType() << std::endl
 		<< GetOriginString();
 	whatBuffer = oss.str();
+
 	return whatBuffer.c_str();
 }
 

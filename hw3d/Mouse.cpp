@@ -1,9 +1,21 @@
+#include "ChiliWin.h"
 #include "Mouse.h"
-#include <Windows.h>
+
 
 std::pair<int, int> Mouse::GetPos() const noexcept
 {
 	return { x, y };
+}
+
+std::optional<Mouse::RawDelta> Mouse::ReadRawDelta() noexcept
+{
+	if (rawDeltaBuffer.empty())
+	{
+		return std::nullopt;
+	}
+	const RawDelta d = rawDeltaBuffer.front();
+	rawDeltaBuffer.pop();
+	return d;
 }
 
 int Mouse::GetPosX() const noexcept
@@ -31,7 +43,7 @@ bool Mouse::RightIsPressed() const noexcept
 	return rightIsPressed;
 }
 
-Mouse::Event Mouse::Read() noexcept
+std::optional<Mouse::Event> Mouse::Read() noexcept
 {
 	if (buffer.size() > 0u)
 	{
@@ -39,10 +51,7 @@ Mouse::Event Mouse::Read() noexcept
 		buffer.pop();
 		return e;
 	}
-	else
-	{
-		return Mouse::Event();
-	}
+	return {};
 }
 
 void Mouse::Flush() noexcept
@@ -50,10 +59,26 @@ void Mouse::Flush() noexcept
 	buffer = std::queue<Event>();
 }
 
+void Mouse::EnableRaw() noexcept
+{
+	rawEnabled = true;
+}
+
+void Mouse::DisableRaw() noexcept
+{
+	rawEnabled = false;
+}
+
+bool Mouse::RawEnabled() const noexcept
+{
+	return rawEnabled;
+}
+
 void Mouse::OnMouseMove(int newX, int newY) noexcept
 {
 	x = newX;
 	y = newY;
+
 	buffer.push(Mouse::Event(Mouse::Event::Type::Move, *this));
 	TrimBuffer();
 }
@@ -69,6 +94,12 @@ void Mouse::OnMouseEnter() noexcept
 {
 	isInWindow = true;
 	buffer.push(Mouse::Event(Mouse::Event::Type::Enter, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnRawDelta(int dx, int dy) noexcept
+{
+	rawDeltaBuffer.push({ dx, dy });
 	TrimBuffer();
 }
 
@@ -121,6 +152,14 @@ void Mouse::TrimBuffer() noexcept
 	while (buffer.size() > bufferSize)
 	{
 		buffer.pop();
+	}
+}
+
+void Mouse::TrimRawInputBuffer() noexcept
+{
+	while (rawDeltaBuffer.size() > bufferSize)
+	{
+		rawDeltaBuffer.pop();
 	}
 }
 

@@ -5,14 +5,20 @@
 #include <wrl.h>
 #include <vector>
 #include "DxgiInfoManager.h"
-#include "d3dcompiler.h"
+#include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <memory>
 #include <random>
+#include "ConditionalNoexcept.h"
+
+namespace Bind
+{
+	class Bindable;
+}
 
 class Graphics
 {
-	friend class Bindable;
+	friend Bind::Bindable;
 public:
 	class Exception : public ChiliException
 	{
@@ -52,21 +58,27 @@ public:
 	};
 
 public:
-	Graphics(HWND hWnd);
+	Graphics(HWND hWnd, int width, int height);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
-	~Graphics() = default;
+	~Graphics();
 	void EndFrame();
-	void ClearBuffer(float red, float green, float blue) noexcept;
-	void DrawTestTriangle(float angle, float x, float y);
-	void DrawIndexed(UINT count) noexcept(!IS_DEBUG);
+	void BeginFrame(float red, float green, float blue) noexcept;
+	void DrawIndexed(UINT count) noxnd;
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
+	void SetCamera(DirectX::FXMMATRIX cam) noexcept;
+	DirectX::XMMATRIX GetCamera() const noexcept;
+	void EnableImgui() noexcept;
+	void DisableImgui() noexcept;
+	bool IsImguiEnabled() const noexcept;
 private:
 	DirectX::XMMATRIX projection;
+	DirectX::XMMATRIX camera;
+	bool imguiEnabled = true;
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
-#endif // !NDEBUG
+#endif
 
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;

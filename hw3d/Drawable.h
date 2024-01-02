@@ -1,8 +1,14 @@
 #pragma once
 #include "Graphics.h"
 #include <DirectXMath.h>
+#include "ConditionalNoexcept.h"
+#include <memory>
 
-class Bindable;
+namespace Bind
+{
+	class Bindable;
+	class IndexBuffer;
+}
 
 class Drawable
 {
@@ -10,12 +16,22 @@ public:
 	Drawable() = default;
 	Drawable(const Drawable&) = delete;
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
-	void Draw(Graphics& gfx) const noexcept(!IS_DEBUG);
-	virtual void Update(float dt) noexcept = 0;
-	void AddBind(std::unique_ptr<Bindable> bind) noexcept(!IS_DEBUG);
-	void AddIndexBuffer(std::unique_ptr<class IndexBuffer> ibuf) noexcept;
+	void Draw(Graphics& gfx) const noxnd;
 	virtual ~Drawable() = default;
+	template<class T>
+	T* QueryBindable() noexcept
+	{
+		for (auto& pb : binds)
+		{
+			if (auto pt = dynamic_cast<T*>(pb.get()))
+			{
+				return pt;
+			}
+		}
+		return nullptr;
+	}
+	void AddBind(std::shared_ptr<Bind::Bindable> bind) noxnd;
 private:
-	const IndexBuffer* pIndexBuffer = nullptr;
-	std::vector<std::unique_ptr<Bindable>> binds;
+	const Bind::IndexBuffer* pIndexBuffer = nullptr;
+	std::vector<std::shared_ptr<Bind::Bindable>> binds;
 };
