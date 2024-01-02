@@ -18,7 +18,6 @@ public:
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
 	void Draw(Graphics& gfx) const noxnd;
 	virtual ~Drawable() = default;
-protected:
 	template<class T>
 	T* QueryBindable() noexcept
 	{
