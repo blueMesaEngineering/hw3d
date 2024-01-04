@@ -17,7 +17,7 @@ cbuffer ObjectCBuf
 };
 
 
-float4 main(float3 viewPos : Position, float3 n : Normal) : SV_Target
+float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_Target
 {
 	// Fragment to light vector data
     const float3 vToL = lightPos - viewPos;
@@ -26,11 +26,11 @@ float4 main(float3 viewPos : Position, float3 n : Normal) : SV_Target
 	// Attenuation
     const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
 	// Diffuse intensity
-    const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
+    const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, viewNormal));
 	// Reflected light vector
-    const float3 w = n * dot(vToL, n);
+    const float3 w = viewNormal * dot(vToL, viewNormal);
     const float3 r = w * 2.0f - vToL;
-	// Calculate specular intensity base on angle between viewing vector and reflection vector, narrow with power function
+	// Calculate specular intensity based on angle between viewing vector and reflection vector, narrow with power function
     const float4 specular = att * (float4(diffuseColor, 1.0f) * diffuseIntensity) * specularColor * pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
 	// Final color
     return saturate(float4(diffuse + ambient, 1.0f) * materialColor + specular);
