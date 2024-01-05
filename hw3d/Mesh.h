@@ -85,9 +85,9 @@ public:
 				ImGui::Checkbox("Gloss Alpha", &hasGlossMap);
 				c.hasGlossMap = hasGlossMap ? TRUE : FALSE;
 
-				ImGui::SliderFloat("Spec Weight", &c.specularMapWeight, 0.0f, 2.0f);
+				ImGui::SliderFloat("Spec Weight", &c.specularMapWeight, 0.0f, 2.0f); 
 
-				ImGui::SliderFloat("Spec Pow", &c.specularPower, 0.0f, 1000.0f, "%f", 5.0f);
+				ImGui::SliderFloat("Spec Pow", &c.specularPower, 0.0f, 1000.0f, "%f"); // Had to remove last argument due to ImGui update NDG 20240105
 
 				ImGui::ColorPicker3("Spec Color", reinterpret_cast<float*>(&c.specularColor));
 
@@ -103,7 +103,7 @@ public:
 
 				ImGui::ColorPicker3("Spec Color", reinterpret_cast<float*>(&c.specularColor));
 
-				ImGui::SliderFloat("Spec Pow", &c.specularPower, 0.0f, 1000.0f, "%f", 5.0f);
+				ImGui::SliderFloat("Spec Pow", &c.specularPower, 0.0f, 1000.0f, "%f"); // Had to remove last argument due to ImGui update NDG 20240105
 
 				ImGui::ColorPicker3("Diff Color", reinterpret_cast<float*>(&c.materialColor));
 
