@@ -23,11 +23,13 @@ SamplerState splr;
 
 float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 tc : Texcoord) : SV_Target
 {
+	// Renormalize interpolated normal
+    viewNormal = normalize(viewNormal);
 	// Fragment to light vector data
     const float3 vToL = lightPos - viewPos;
     const float distToL = length(vToL);
     const float3 dirToL = vToL / distToL;
-	//  Attenuation
+	// Attenuation
     const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
 	// Diffuse intensity
     const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, viewNormal));
