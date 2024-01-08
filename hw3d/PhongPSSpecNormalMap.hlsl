@@ -22,7 +22,7 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 viewTa
 {
 	// Normalize the mesh normal
     viewNormal = normalize(viewNormal);
-	// Sample normal from map if normal mapping enabled
+	// Replace normal with mapped if normal mapping enabled
     if (normalMapEnabled)
     {
         viewNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
@@ -62,6 +62,6 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 viewTa
     	, att
     	, specularPower
     );
-	// Final color attenuate diffuse & ambient by diffuse texture color and add specular reflected
+	// Final color = attenuate diffuse & ambient by diffuse texture color and add specular reflected
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specularReflected), 1.0f);
 }
