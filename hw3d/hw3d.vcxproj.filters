@@ -52,6 +52,9 @@
     <Filter Include="assimp\include\assimp\Compiler">
       <UniqueIdentifier>{71bb7a3b-e7b6-4f42-9391-16ab77847b85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Common">
+      <UniqueIdentifier>{aae4c29f-1276-4fa9-b874-10bf616cae8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -597,7 +600,7 @@
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="PointLight.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -692,7 +695,7 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="ShaderOps.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Common</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
