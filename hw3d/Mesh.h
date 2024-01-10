@@ -86,7 +86,7 @@ public:
 				ImGui::Checkbox("Gloss Alpha", &hasGlossMap);
 				c.hasGlossMap = hasGlossMap ? TRUE : FALSE;
 
-				ImGui::SliderFloat("Spec Weight", &c.specularMapWeight, 0.0f, 2.0f); 
+				ImGui::SliderFloat("Spec Weight", &c.specularMapWeight, 0.0f, 2.0f);
 
 				ImGui::SliderFloat("Spec Pow", &c.specularPower, 0.0f, 1000.0f, "%f"); // Had to remove last argument due to ImGui update NDG 20240105
 
@@ -128,13 +128,13 @@ private:
 class Model
 {
 public:
-	Model(Graphics& gfx, const std::string& pathString);
+	Model(Graphics& gfx, const std::string& pathString, float scale = 1.0f);
 	void Draw(Graphics& gfx) const noxnd;
 	void ShowWindow(Graphics& gfx, const char* windowName = nullptr) noexcept;
 	void SetRootTransform(DirectX::FXMMATRIX tf) noexcept;
 	~Model() noexcept;
 private:
-	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterial, const std::filesystem::path& path);
+	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterial, const std::filesystem::path& path, float scale);
 	std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node) noexcept;
 private:
 	std::unique_ptr<Node> pRoot;
