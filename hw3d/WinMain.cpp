@@ -12,7 +12,7 @@ int CALLBACK WinMain(
 
 	try
 	{
-		return App().DoStuff();
+		return App(lpCmdLine).DoStuff();
 	}
 	catch(const ChiliException& e)
 	{
