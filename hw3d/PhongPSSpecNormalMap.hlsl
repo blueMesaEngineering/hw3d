@@ -1,4 +1,6 @@
 #include "ShaderOps.hlsl"
+#include "LightVectorData.hlsl"
+
 #include "PointLight.hlsl"
 
 cbuffer ObjectCBuf
@@ -18,7 +20,7 @@ Texture2D nmap;
 SamplerState splr;
 
 
-float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, float2 tc : Texcoord) : SV_Target
+float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
 	// Normalize the mesh normal
     viewNormal = normalize(viewNormal);
@@ -28,9 +30,7 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 viewTa
         viewNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
     }
 	// Fragment to light vector data
-    const float3 viewFragToL = viewLightPos - viewPos;
-    const float distFragToL = length(viewFragToL);
-    const float3 viewDirFragToL = viewFragToL / distFragToL;
+    const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
 	// Specular parameter determination (mapped or uniform)
     float3 specularReflectionColor;
     float specularPower = specularPowerConst;
@@ -49,16 +49,16 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 viewTa
     }
 
 	// Attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, distFragToL);
+    const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
 	// Diffuse light
-    const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, viewDirFragToL, viewNormal);
+    const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
     // specular reflected
     const float3 specularReflected = Speculate(
     	specularReflectionColor
     	, 1.0f
     	, viewNormal
-    	, viewFragToL
-    	, viewPos
+    	, lv.vToL
+    	, viewFragPos
     	, att
     	, specularPower
     );
