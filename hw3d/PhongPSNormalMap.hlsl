@@ -90,7 +90,12 @@ cbuffer ObjectCBuf
     float padding[1];
 };
 
-#include "Transform.hlsl"
+//#include "Transform.hlsl"
+cbuffer TransformCBuf
+{
+    matrix modelView;
+    matrix modelViewProj;
+};
 
 Texture2D tex;
 Texture2D nmap : register(t2);
