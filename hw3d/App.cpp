@@ -55,7 +55,7 @@ void App::DoFrame()
 
 	//wall.Draw(wnd.Gfx());
 	//tp.Draw(wnd.Gfx());
-	nano.Draw(wnd.Gfx());
+	//nano.Draw(wnd.Gfx());
 	gobber.Draw(wnd.Gfx());
 	light.Draw(wnd.Gfx());
 
