@@ -363,3 +363,11 @@ MigrationBackup/
 FodyWeavers.xsd
 /hw3d/imgui.ini
 /hw3d/Surface-Load-Exception.txt
+/hw3d/PhongPS.cso
+/hw3d/PhongVS.cso
+/hw3d/SolidPS.cso
+/hw3d/SolidVS.cso
+/hw3d/PhongPS.cso
+/hw3d/PhongVS.cso
+/hw3d/SolidPS.cso
+/hw3d/SolidVS.cso
