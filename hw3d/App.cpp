@@ -54,8 +54,8 @@ void App::DoFrame()
 	light.Bind(wnd.Gfx(), cam.GetMatrix());
 
 	//wall.Draw(wnd.Gfx());
-	tp.Draw(wnd.Gfx());
-	//nano.Draw(wnd.Gfx());
+	//tp.Draw(wnd.Gfx());
+	nano.Draw(wnd.Gfx());
 	gobber.Draw(wnd.Gfx());
 	light.Draw(wnd.Gfx());
 
