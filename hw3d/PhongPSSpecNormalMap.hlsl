@@ -126,7 +126,6 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     {
         specularReflectionColor = specularColor;
     }
-
 	// Attenuation
     const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
 	// Diffuse light
