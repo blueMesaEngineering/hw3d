@@ -183,6 +183,12 @@
     <ClCompile Include="TestCube.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="ChiliXM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturePreprocessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliWin.h">
@@ -602,7 +608,10 @@
     <ClInclude Include="PointLight.hlsl">
       <Filter>Shader\Common</Filter>
     </ClInclude>
-    <ClInclude Include="NormalMapTwerker.h">
+    <ClInclude Include="ChiliXM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturePreprocessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -706,6 +715,7 @@
     <FxCompile Include="Transform.hlsl">
       <Filter>Shader\Common</Filter>
     </FxCompile>
+    <FxCompile Include="PhongPSSpec.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="imgui\imgui.natvis">
