@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
-    <ClInclude Include="AppOld.h" />
     <ClInclude Include="assimp\include\assimp\aabb.h" />
     <ClInclude Include="assimp\include\assimp\ai_assert.h" />
     <ClInclude Include="assimp\include\assimp\anim.h" />
@@ -169,7 +168,6 @@
     <ClInclude Include="DxgiInfoManager.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="GraphicsOld.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
